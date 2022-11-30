@@ -9,4 +9,8 @@
     <welcome-file>default.jsp</welcome-file>
     <welcome-file>default.htm</welcome-file>
   </welcome-file-list>
+  <context-param>
+    <param-name>server_address</param-name>
+    <param-value>localhost</param-value>
+  </context-param>
 </web-app>
