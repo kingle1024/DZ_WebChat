@@ -13,4 +13,14 @@
     <param-name>server_address</param-name>
     <param-value>localhost</param-value>
   </context-param>
+  <filter>
+    <display-name>EncodingFilter</display-name>
+    <init-param>
+      <param-name>no.auth.urls</param-name>
+      <param-value>
+        /login.html
+        /login
+      </param-value>
+    </init-param>
+  </filter>
 </web-app>
