@@ -31,6 +31,8 @@ public class EncoderFilter implements Filter {
         loginUrl = context + fConfig.getInitParameter("login.url");
 
         authUrls.add("/login");
+        authUrls.add("/member/dupUidCheck");
+        authUrls.add("/member/insert");
         authUrls.add("/login.jsp");
         authUrls.add("/register.jsp");
         authUrls.add("/register.html");
@@ -52,7 +54,7 @@ public class EncoderFilter implements Filter {
         String message = "Context Info :"+context +
                 "\n URI Info : "+ pathInfo +
                 "\n Physical Path : " + realPath;
-//        System.out.println(message+"\n");
+        System.out.println(message+"\n");
 
         /*로그인 된 사용자만 사용 가능한 URL 인지 확인*/
         if(isAuth(req, pathInfo)) {
