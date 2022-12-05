@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -35,8 +36,12 @@ public class LoginServlet extends HttpServlet {
             boolean result = dao.isExisted(member);
             RequestDispatcher dispatch;
             if(result){
+                HttpSession session = request.getSession();
+                session.setAttribute("isLogon", true);
+                session.setAttribute("login.id", user_id);
+
                 request.setAttribute("id", user_id);
-                request.setAttribute("name", "이름");
+                request.setAttribute("name", member.getName());
 
                 dispatch = request.getRequestDispatcher("/index.jsp");
                 dispatch.forward(request, response);
