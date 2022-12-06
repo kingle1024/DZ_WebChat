@@ -12,12 +12,13 @@
 </head>
 <body>
   ${errorMsg}
-  <form action="${pageContext.request.contextPath}/login" name="frmLogin" method="post" encType="UTF-8">
-    아이디 <input type="text" name="user_id"><br/>
-    비밀번호 <input type="password" name="user_pw"><br/>
+  <form action="${pageContext.request.contextPath}/login" name="frmLogin" method="post">
+    아이디 <label><input type="text" name="user_id"></label><br/>
+
+    비밀번호 <label><input type="password" name="user_pw"></label><br/>
     <input type="submit" value="로그인">
     <input type="reset" value="다시입력">
-    <a href="register.html">회원가입</a>
+    <a href="register.jsp">회원가입</a>
   </form>
 </body>
 </html>
