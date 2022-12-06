@@ -25,22 +25,21 @@ public class MemberServlet extends HttpServlet {
         switch (requestURI) {
             case "/member/view": {
                 HttpSession session = request.getSession();
-                String id = (String) session.getAttribute("login.id");
-                System.out.println("memberId:" + id);
+                String id = (String) session.getAttribute("login_id");
+
                 try {
                     MemberDAO memberDAO = new MemberDAO();
                     Member member = memberDAO.viewMember(id);
                     request.setAttribute("member", member);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("view.jsp");
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/view.jsp");
+
                     dispatcher.forward(request, response);
                 } catch (NamingException e) {
                     throw new RuntimeException(e);
                 }
                 break;
             }
-            case "/member/list":
 
-                break;
             case "/member/dupUidCheck": {
                 String id = request.getParameter("id");
 
@@ -81,10 +80,8 @@ public class MemberServlet extends HttpServlet {
         if (requestURI.equals("/member/insert")) {
             System.out.println("member/insert");
             BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
-            System.out.println("111");
             String jsonStr = in.readLine();
-            System.out.println("222");
-            System.out.println("jsonStr = " + jsonStr);
+
             JSONObject jsonMember = new JSONObject(jsonStr);
             String uid = (String) jsonMember.get("id");
             String pwd = (String) jsonMember.get("pwd");
@@ -95,8 +92,18 @@ public class MemberServlet extends HttpServlet {
             JSONObject jsonResult = new JSONObject();
             try {
                 MemberDAO memberDAO = new MemberDAO();
-                memberDAO.insertMember(
-                        new Member(uid, pwd, name, phone, email, LocalDateTime.now(), null));
+                Member member = Member.builder()
+                        .userId(uid)
+                        .pwd(pwd)
+                        .name(name)
+                        .phone(phone)
+                        .email(email)
+                        .isAdmin(false)
+                        .userStatus(MemberCode.MEMBER_STATUS_ING)
+                        .createdate(LocalDateTime.now())
+                        .build();
+
+                memberDAO.insertMember(member);
                 jsonResult.put("status", true);
                 jsonResult.put("url", "index.jsp");
                 jsonResult.put("message", "회원가입 성공");

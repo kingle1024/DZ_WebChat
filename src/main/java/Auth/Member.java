@@ -17,6 +17,8 @@ public class Member {
     private String name;
     private String phone;
     private String email;
+    private String userStatus;
+    private boolean isAdmin;
     private LocalDateTime createdate;
     private LocalDateTime loginDateTime;
 

@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.SQLException;
 
 
 @WebServlet(name = "login", value = "/login")
@@ -28,30 +27,38 @@ public class LoginServlet extends HttpServlet {
         try {
             String user_id = request.getParameter("user_id");
             String user_pw = request.getParameter("user_pw");
-            Member member = new Member();
-            member.setUserId(user_id);
-            member.setPwd(user_pw);
 
             MemberDAO dao = new MemberDAO();
-            boolean result = dao.isExisted(member);
+            Member m = dao.viewMember(user_id);
+
             RequestDispatcher dispatch;
-            if(result){
-                HttpSession session = request.getSession();
-                session.setAttribute("isLogon", true);
-                session.setAttribute("login.id", user_id);
+            validMember(request, response, m);
 
-                request.setAttribute("id", user_id);
-                request.setAttribute("name", member.getName());
+            HttpSession session = request.getSession();
+            session.setAttribute("isLogon", true);
+            session.setAttribute("login_id", user_id);
+            session.setAttribute("login_name", m.getName());
+            session.setAttribute("login_admin", m.isAdmin());
 
-                dispatch = request.getRequestDispatcher("/index.jsp");
-                dispatch.forward(request, response);
-            }else{
-                request.setAttribute("errorMsg", "아이디 및 비밀번호를 확인하세요.");
-                dispatch = request.getRequestDispatcher("/login.jsp");
-                dispatch.forward(request, response);
-            }
-        } catch (NamingException | SQLException | IOException | ServletException e) {
+            dispatch = request.getRequestDispatcher("/index.jsp");
+            dispatch.forward(request, response);
+        } catch (NamingException | IOException | ServletException e) {
             throw new RuntimeException(e);
         }
     }
+
+    private static void validMember(HttpServletRequest request, HttpServletResponse response, Member m) throws ServletException, IOException {
+        RequestDispatcher dispatch;
+        if(m == null){
+            request.setAttribute("errorMsg", "아이디 및 비밀번호를 확인하세요.");
+            dispatch = request.getRequestDispatcher("/login.jsp");
+            dispatch.forward(request, response);
+        }else if(m.getUserStatus().equals("STOP")){
+            request.setAttribute("errorMsg", "정지된 회원입니다.");
+            dispatch = request.getRequestDispatcher("/login.jsp");
+            dispatch.forward(request, response);
+        }
+    }
+
+
 }

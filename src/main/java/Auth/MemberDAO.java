@@ -9,6 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MemberDAO {
     private final Connection con;
@@ -40,8 +42,6 @@ public class MemberDAO {
         boolean result;
         String id = member.getUserId();
         String pwd = member.getPwd();
-
-//        con = dataFactory.getConnection();
         String query = "select if(count(*) = 1, 'true', 'false') as result " +
                 "from member " +
                 "where userid = ? and pwd = ?";
@@ -49,15 +49,14 @@ public class MemberDAO {
         pstmt.setString(1, id);
         pstmt.setString(2, pwd);
         ResultSet rs = pstmt.executeQuery();
-        rs.next();
 
+        rs.next();
         result = Boolean.parseBoolean(rs.getString("result"));
 
         return result;
     }
 
     public Member viewMember(String id){
-        System.out.println("viewMember:"+id);
         String query = "select * from member where userid = ?";
 
         try {
@@ -65,16 +64,16 @@ public class MemberDAO {
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
             Member member = null;
+
             if(rs.next()){
-                member = new Member();
-//                Member.builder()
-//                        .userId(rs.getString("id"))
-//                        .
-//                        .build();
-                member.setUserId(rs.getString("userId"));
-                member.setPwd(rs.getString("pwd"));
-                member.setName(rs.getString("name"));
-                member.setPhone(rs.getString("phone"));
+                member = Member.builder()
+                                .userId(rs.getString("USERID"))
+                                .pwd(rs.getString("PWD"))
+                                .name(rs.getString("name"))
+                                .phone(rs.getString("phone"))
+                                .isAdmin(rs.getBoolean("isAdmin"))
+                                .userStatus(rs.getString("userStatus"))
+                                .build();
             }
 
             return member;
@@ -103,5 +102,73 @@ public class MemberDAO {
             close();
         }
     }
+    public List<Member> list(){
+        String query = "select * from member";
 
+        try {
+            pstmt = con.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            List<Member> members = new ArrayList<>();
+
+            while(rs.next()){
+                Member m  = new Member();
+                m.setUserId(rs.getString("userid"));
+                m.setName(rs.getString("name"));
+                m.setPhone(rs.getString("phone"));
+                members.add(m);
+            }
+            return members;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean userStatus_noUse(String id){
+        try {
+
+            String query = "update member " +
+                    "set userStatus = ?" +
+                    "where userid = ?";
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, "NOUSE");
+            pstmt.setString(2, id);
+            int result = pstmt.executeUpdate();
+            if(result > 0) return true;
+            else return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean userStatus_use(String id) {
+        try {
+
+            String query = "update member " +
+                    "set userStatus = ?" +
+                    "where userid = ?";
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, "USE");
+            pstmt.setString(2, id);
+            int result = pstmt.executeUpdate();
+            if(result > 0) return true;
+            else return false;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean userStatus_withdraw(String id){
+        try {
+            String query = "update member " +
+                    "set userStatus = ?" +
+                    "where userid = ?";
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, "STOP");
+            pstmt.setString(2, id);
+            int result = pstmt.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
