@@ -32,7 +32,10 @@ public class AdminServlet extends HttpServlet {
         switch (requestURI) {
             case "/admin/memberList" : {
                 validAdmin(request, response);
-                List<Member> member = memberDAO.list();
+                String search = request.getParameter("search");
+                if(search == null) search = "";
+
+                List<Member> member = memberDAO.list(search);
                 request.setAttribute("member", member);
 
                 dispatch = request.getRequestDispatcher("/listAdmin.jsp");

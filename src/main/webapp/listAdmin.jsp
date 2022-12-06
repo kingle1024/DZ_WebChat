@@ -12,13 +12,23 @@
     <title>회원 목록</title>
 </head>
 <body>
+<form name="searchForm" id="searchForm" action="memberList" method="get">
+    <label for="search"></label><input type="text" placeholder="검색할 이름 입력" id="search" name="search">
+    <input type="submit" value="검색">
+</form>
 <table>
+
     <jsp:useBean id="member" scope="request" type="java.util.List"/>
     <c:forEach var="memberBean" items="${member}" varStatus = "listMembersStatus">
         <tr>
             <td>${memberBean.userId}</td>
             <td>${memberBean.name}</td>
             <td>${memberBean.email}</td>
+            <td>${memberBean.userStatus}</td>
+            <td>${memberBean.createdate}</td>
+            <c:if test="${memberBean.loginDateTime eq not null}">
+                <td>${memberBean.loginDateTime}</td>--%>
+            </c:if>
 
             <td><button onclick="userStatus_noUse('${memberBean.userId}')">미사용</button></td>
             <td><button onclick="userStatus_use('${memberBean.userId}')">사용</button></td>

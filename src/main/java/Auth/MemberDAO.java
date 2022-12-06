@@ -4,10 +4,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,19 +99,35 @@ public class MemberDAO {
             close();
         }
     }
-    public List<Member> list(){
-        String query = "select * from member";
-
+    public List<Member> list(String search){
         try {
+            String query = "select * from member where name like ?";
             pstmt = con.prepareStatement(query);
+            pstmt.setString(1, "%"+search+"%");
+
             ResultSet rs = pstmt.executeQuery();
             List<Member> members = new ArrayList<>();
 
             while(rs.next()){
-                Member m  = new Member();
-                m.setUserId(rs.getString("userid"));
-                m.setName(rs.getString("name"));
-                m.setPhone(rs.getString("phone"));
+
+
+                Member m = Member.builder()
+                        .userId(rs.getString("userid"))
+                        .name(rs.getString("name"))
+                        .phone(rs.getString("phone"))
+                        .email(rs.getString("email"))
+                        .isAdmin(rs.getBoolean("isAdmin"))
+                        .userStatus(rs.getString("userStatus"))
+                        .createdate(rs.getTimestamp("createdate").toLocalDateTime())
+//                        .loginDateTime(rs.getTimestamp("LOGINDATETIME").toLocalDateTime())
+                        .build();
+
+                Timestamp loginDateTime = rs.getTimestamp("LOGINDATETIME");
+                if(loginDateTime != null){
+                    LocalDateTime localDateTime = loginDateTime.toLocalDateTime();
+                    m.setLoginDateTime(localDateTime);
+                }
+
                 members.add(m);
             }
             return members;
@@ -133,8 +146,7 @@ public class MemberDAO {
             pstmt.setString(1, "NOUSE");
             pstmt.setString(2, id);
             int result = pstmt.executeUpdate();
-            if(result > 0) return true;
-            else return false;
+            return result > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -150,8 +162,7 @@ public class MemberDAO {
             pstmt.setString(1, "USE");
             pstmt.setString(2, id);
             int result = pstmt.executeUpdate();
-            if(result > 0) return true;
-            else return false;
+            return result > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
