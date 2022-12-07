@@ -21,6 +21,7 @@
     <jsp:useBean id="member" scope="request" type="java.util.List"/>
     <c:forEach var="memberBean" items="${member}" varStatus = "listMembersStatus">
         <tr>
+            <td>${listMembersStatus.count}</td>
             <td>${memberBean.userId}</td>
             <td>${memberBean.name}</td>
             <td>${memberBean.email}</td>
