@@ -41,6 +41,7 @@ public class BoardDAO {
                         .bcontent(rs.getString("bcontent"))
                         .bwriter(rs.getString("bwriter"))
                         .bhit(rs.getInt("bhit"))
+                        .bdate(rs.getTimestamp("bdate").toLocalDateTime())
                         .build();
                 boards.add(b);
             }
