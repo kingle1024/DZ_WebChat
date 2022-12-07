@@ -18,7 +18,8 @@
     비밀번호 <label><input type="password" name="user_pw"></label><br/>
     <input type="submit" value="로그인">
     <input type="reset" value="다시입력">
-    <a href="register.jsp">회원가입</a>
+    <a href="register.jsp">회원가입</a> <br/>
+    <a href="search.jsp">아이디 및 비밀번호 찾기</a>
   </form>
 </body>
 </html>

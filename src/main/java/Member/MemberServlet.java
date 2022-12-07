@@ -92,7 +92,12 @@ public class MemberServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestURI = request.getRequestURI();
         System.out.println("MemberServlet doPost > " + requestURI);
-
+        out = response.getWriter();
+        try {
+            memberDAO = new MemberDAO();
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
         switch (requestURI) {
             case "/member/edit":{
                 System.out.println("member/edit");
@@ -104,33 +109,78 @@ public class MemberServlet extends HttpServlet {
                 HttpSession session = request.getSession();
                 String uid = (String) session.getAttribute("login_id");
                 JSONObject jsonResult = new JSONObject();
-                try {
-                    MemberDAO memberDAO = new MemberDAO();
-                    Member member = memberDAO.viewMember(uid);
-                    String name = (String) jsonMember.get("name");
-                    String email = (String) jsonMember.get("email");
-                    System.out.println("email:"+email);
-                    String phone = (String) jsonMember.get("phone");
 
-                    member.setName(name);
-                    member.setPhone(phone);
-                    member.setEmail(email);
-                    boolean result = memberDAO.edit(member);
-                    if(!result){
-                        jsonResult.put("status", false);
-                        jsonResult.put("message", "수정 실패");
-                    }else {
-                        jsonResult.put("status", true);
-                        jsonResult.put("url", "view");
-                        jsonResult.put("message", "수정 성공");
-                    }
-                } catch (NamingException e) {
+                Member member = memberDAO.viewMember(uid);
+                String name = (String) jsonMember.get("name");
+                String email = (String) jsonMember.get("email");
+                System.out.println("email:"+email);
+                String phone = (String) jsonMember.get("phone");
+
+                member.setName(name);
+                member.setPhone(phone);
+                member.setEmail(email);
+                boolean result = memberDAO.edit(member);
+                if(!result){
                     jsonResult.put("status", false);
                     jsonResult.put("message", "수정 실패");
+                }else {
+                    jsonResult.put("status", true);
+                    jsonResult.put("url", "view");
+                    jsonResult.put("message", "수정 성공");
                 }
-                PrintWriter out = response.getWriter();
+
                 out.println(jsonResult);
                 break;
+            }
+            case "/member/searchId":{
+                BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
+                String jsonStr = in.readLine();
+
+                JSONObject jsonObject = new JSONObject(jsonStr);
+                String name = (String) jsonObject.get("name");
+                String email = (String) jsonObject.get("email");
+                Member m = Member.builder()
+                        .name(name)
+                        .email(email)
+                        .build();
+                System.out.println("m:"+m);
+                Member member = memberDAO.searchId(m);
+
+                JSONObject jsonResult = new JSONObject();
+                if(member != null) {
+                    jsonResult.put("status", true);
+                    jsonResult.put("message", "회원님의 아이디는 " + member.getUserId() + " 입니다.");
+                }else{
+                    jsonResult.put("status", false);
+                    jsonResult.put("message", "일치하는 정보가 없습니다.");
+                }
+                out.println(jsonResult);
+            }
+            case "/member/searchPwd":{
+                BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
+                String jsonStr = in.readLine();
+
+                JSONObject jsonObject = new JSONObject(jsonStr);
+                System.out.println(jsonStr);
+                System.out.println(jsonObject);
+                String id = (String) jsonObject.get("userid");
+                String phone = (String) jsonObject.get("phone");
+                Member m = Member.builder()
+                        .userId(id)
+                        .phone(phone)
+                        .build();
+
+                Member member = memberDAO.searchPwd(m);
+                System.out.println(member);
+                JSONObject jsonResult = new JSONObject();
+                if(member != null) {
+                    jsonResult.put("status", true);
+                    jsonResult.put("message", "회원님의 비밀번호는 " + member.getPwd() + " 입니다.");
+                }else{
+                    jsonResult.put("status", false);
+                    jsonResult.put("message", "일치하는 정보가 없습니다.");
+                }
+                out.println(jsonResult);
             }
             case "/member/insert":
                 System.out.println("member/insert");
@@ -146,7 +196,6 @@ public class MemberServlet extends HttpServlet {
 
                 JSONObject jsonResult = new JSONObject();
                 try {
-                    MemberDAO memberDAO = new MemberDAO();
                     Member member = Member.builder()
                             .userId(uid)
                             .pwd(pwd)
@@ -162,13 +211,12 @@ public class MemberServlet extends HttpServlet {
                     jsonResult.put("status", true);
                     jsonResult.put("url", "/jsp/index.jsp");
                     jsonResult.put("message", "회원가입 성공");
-                } catch (NamingException e) {
+                } catch (Member.ExistMember e) {
                     jsonResult.put("status", false);
                     jsonResult.put("message", "해당 아이디는 현재 사용중인 아이디입니다.");
-                } catch (Member.ExistMember e) {
                     throw new RuntimeException(e);
                 }
-                PrintWriter out = response.getWriter();
+
                 out.println(jsonResult);
                 break;
         }
