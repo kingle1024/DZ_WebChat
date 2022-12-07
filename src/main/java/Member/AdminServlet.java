@@ -38,7 +38,7 @@ public class AdminServlet extends HttpServlet {
                 List<Member> member = memberDAO.list(search);
                 request.setAttribute("member", member);
 
-                dispatch = request.getRequestDispatcher("/listAdmin.jsp");
+                dispatch = request.getRequestDispatcher("/member/list.jsp");
                 dispatch.forward(request, response);
 
                 break;
