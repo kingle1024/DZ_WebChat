@@ -17,41 +17,48 @@ import java.time.LocalDateTime;
 
 @WebServlet(name = "MemberServlet", value = "/member/*")
 public class MemberServlet extends HttpServlet {
+    MemberDAO memberDAO;
+    PrintWriter out;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("MemberServlet doGet > ");
         String requestURI = request.getRequestURI();
+        System.out.println("MemberServlet doGet > " + requestURI);
+        JSONObject jsonResult = new JSONObject();
+        HttpSession session = request.getSession();
+        String id = (String) session.getAttribute("login_id");
+        System.out.println(id);
+        try {
+            memberDAO = new MemberDAO();
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
 
         switch (requestURI) {
-            case "/member/view": {
-                HttpSession session = request.getSession();
-                String id = (String) session.getAttribute("login_id");
-
-                try {
-                    MemberDAO memberDAO = new MemberDAO();
-                    Member member = memberDAO.viewMember(id);
-                    request.setAttribute("member", member);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/view.jsp");
-
-                    dispatcher.forward(request, response);
-                } catch (NamingException e) {
-                    throw new RuntimeException(e);
+            case "/member/withdraw":{
+                out = response.getWriter();
+                if(memberDAO.userStatus_withdraw(id)){
+                    jsonResult.put("message", "정지 성공");
+                    jsonResult.put("status", true);
+                    jsonResult.put("url", "/logout");
+                }else{
+                    jsonResult.put("message", "정지 실패");
+                    jsonResult.put("status", false);
                 }
+                out.println(jsonResult);
+                break;
+            }
+            case "/member/view": {
+                Member member = memberDAO.viewMember(id);
+                request.setAttribute("member", member);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/view.jsp");
+
+                dispatcher.forward(request, response);
+
                 break;
             }
 
             case "/member/dupUidCheck": {
-                String id = request.getParameter("id");
-
-                MemberDAO memberDAO;
-                try {
-                    memberDAO = new MemberDAO();
-                } catch (NamingException e) {
-                    throw new RuntimeException(e);
-                }
-
                 Member member = memberDAO.viewMember(id);
-                JSONObject jsonResult = new JSONObject();
                 System.out.println("dupUidCheck");
                 System.out.println(member);
 
@@ -67,19 +74,12 @@ public class MemberServlet extends HttpServlet {
                 break;
             }
             case "/member/edit":{
-                HttpSession session = request.getSession();
-                String id = (String) session.getAttribute("login_id");
+                Member member = memberDAO.viewMember(id);
+                request.setAttribute("member", member);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/member/edit.jsp");
 
-                try {
-                    MemberDAO memberDAO = new MemberDAO();
-                    Member member = memberDAO.viewMember(id);
-                    request.setAttribute("member", member);
-                    RequestDispatcher dispatcher = request.getRequestDispatcher("/member/edit.jsp");
+                dispatcher.forward(request, response);
 
-                    dispatcher.forward(request, response);
-                } catch (NamingException e) {
-                    throw new RuntimeException(e);
-                }
                 break;
             }
             default:
@@ -160,7 +160,7 @@ public class MemberServlet extends HttpServlet {
 
                     memberDAO.insertMember(member);
                     jsonResult.put("status", true);
-                    jsonResult.put("url", "index.jsp");
+                    jsonResult.put("url", "/jsp/index.jsp");
                     jsonResult.put("message", "회원가입 성공");
                 } catch (NamingException e) {
                     jsonResult.put("status", false);
