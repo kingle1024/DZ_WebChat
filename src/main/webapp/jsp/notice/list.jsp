@@ -30,7 +30,7 @@
     <c:forEach var="board" items="${boardsList}" varStatus = "status">
         <tr>
             <td>${status.index}</td>
-            <td><a href="${pageContext.request.contextPath}/jsp/notice/view?no=${board.bno}">${board.btitle}</a></td>
+            <td><a href="${pageContext.request.contextPath}/board/notice/view?no=${board.bno}">${board.btitle}</a></td>
             <td>${board.bdate}</td>
             <td>${board.bhit}</td>
         </tr>
