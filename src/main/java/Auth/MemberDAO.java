@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemberDAO {
-    private final Connection con;
-    private PreparedStatement pstmt;
+    final Connection con;
+    PreparedStatement pstmt;
 
     public MemberDAO() throws NamingException {
         Context ctx = new InitialContext();
@@ -66,11 +66,19 @@ public class MemberDAO {
                 member = Member.builder()
                                 .userId(rs.getString("USERID"))
                                 .pwd(rs.getString("PWD"))
+                                .email(rs.getString("email"))
                                 .name(rs.getString("name"))
                                 .phone(rs.getString("phone"))
                                 .isAdmin(rs.getBoolean("isAdmin"))
                                 .userStatus(rs.getString("userStatus"))
+                                .createdate(rs.getTimestamp("createdate").toLocalDateTime())
                                 .build();
+
+                Timestamp loginDateTime = rs.getTimestamp("LOGINDATETIME");
+                if(loginDateTime != null){
+                    LocalDateTime localDateTime = loginDateTime.toLocalDateTime();
+                    member.setLoginDateTime(localDateTime);
+                }
             }
 
             return member;
@@ -97,6 +105,25 @@ public class MemberDAO {
             e.printStackTrace();
         }finally {
             close();
+        }
+    }
+    public boolean edit(Member member){
+        String query = "update member " +
+                "set pwd = ?, name = ?, email = ?, phone = ? " +
+                "where userId=?";
+        try {
+            System.out.println("edit member:"+member);
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, member.getPwd());
+            pstmt.setString(2, member.getName());
+            pstmt.setString(3, member.getEmail());
+            pstmt.setString(4, member.getPhone());
+            pstmt.setString(5, member.getUserId());
+
+            int result = pstmt.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
     public List<Member> list(String search){

@@ -1,4 +1,3 @@
-
 <%--
   Created by IntelliJ IDEA.
   User: ejy1024
@@ -15,13 +14,77 @@
 <body>
 view.jsp 페이지 <br/>
 
-user id : ${member.userId} <br/>
-user name  : ${member.name} <br/>
-user email : ${member.email} <br/>
-user registerDate : ${member.createdate} <br/>
-user loginDate : ${member.loginDateTime} <br/>
+<form method="post" id="editForm">
+    <input type="submit" id="editSubmit" value="수정"> <br/>
+    user id : <span id="userIdSpan">${member.userId}</span> <br/>
+    user name  : <span><input type="text" name="name" id="name" value="${member.name}"></span> <br/>
+    user email : <input type="text" name="email" id="email" value="${member.email}"> <br/>
+    user phone : <input type="text" name="phone" id="phone" value="${member.phone}"> <br/>
+    user registerDate <span>${member.createdate}</span><br/>
+    user loginDate : <span>${member.loginDateTime} </span><br/>
+</form>
 
 <a href="logout">로그아웃</a><br/>
 <a href="${pageContext.request.contextPath}/">main</a>
+<script>
+    <%--let form = document.querySelector("#editForm");--%>
+    <%--form.addEventListener('submit', (event) => {--%>
+    <%--    event.preventDefault();--%>
+    <%--    console.log(this.name.value);--%>
+    <%--    let param = {--%>
+    <%--        "name" : this.name.value,--%>
+    <%--        "email" : this.email.value,--%>
+    <%--        "phone" : this.phone.value--%>
+    <%--    }--%>
+    <%--    console.log(param.name);--%>
+
+    <%--    fetch('${pageContext.request.contextPath}/member/edit', {--%>
+    <%--        method : 'POST',--%>
+    <%--        headers : {--%>
+    <%--            'Content-Type' : 'application/json;charset=utf-8'--%>
+    <%--        },--%>
+    <%--        body : JSON.stringify(param)--%>
+    <%--    })--%>
+    <%--        .then(response => response.json())--%>
+    <%--        .then(jsonResult => {--%>
+    <%--            alert(jsonResult);--%>
+    <%--            if(jsonResult.status === false){--%>
+    <%--                alert(jsonResult.message);--%>
+    <%--            }else{--%>
+    <%--                // location.href = jsonResult.url;--%>
+    <%--            }--%>
+    <%--        });--%>
+    <%--});--%>
+
+    let editButton = document.querySelector("#editSubmit");
+
+    editButton.onclick = (event) => {
+        event.preventDefault();
+        edit(event);
+    };
+
+    function edit(event){
+        let param = {
+            "name" : document.getElementById("name").value,
+            "email" : document.getElementById("email").value,
+            "phone" : document.getElementById("phone").value
+        }
+
+        fetch('${pageContext.request.contextPath}/member/edit', {
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify(param)
+        })
+            .then(response => response.json())
+            .then(jsonResult => {
+                alert(jsonResult.message);
+                if(jsonResult.status){
+                    location.href = jsonResult.url;
+                }
+            });
+    }
+</script>
 </body>
 </html>

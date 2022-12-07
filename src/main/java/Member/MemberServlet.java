@@ -66,6 +66,22 @@ public class MemberServlet extends HttpServlet {
                 out.println(jsonResult);
                 break;
             }
+            case "/member/edit":{
+                HttpSession session = request.getSession();
+                String id = (String) session.getAttribute("login_id");
+
+                try {
+                    MemberDAO memberDAO = new MemberDAO();
+                    Member member = memberDAO.viewMember(id);
+                    request.setAttribute("member", member);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/member/edit.jsp");
+
+                    dispatcher.forward(request, response);
+                } catch (NamingException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            }
             default:
                 System.out.println("requestURI : " + requestURI);
                 break;
@@ -74,47 +90,89 @@ public class MemberServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("MemberServlet doPost > ");
-
         String requestURI = request.getRequestURI();
-        if (requestURI.equals("/member/insert")) {
-            System.out.println("member/insert");
-            BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
-            String jsonStr = in.readLine();
+        System.out.println("MemberServlet doPost > " + requestURI);
 
-            JSONObject jsonMember = new JSONObject(jsonStr);
-            String uid = (String) jsonMember.get("id");
-            String pwd = (String) jsonMember.get("pwd");
-            String name = (String) jsonMember.get("userName");
-            String email = (String) jsonMember.get("email");
-            String phone = (String) jsonMember.get("phone");
+        switch (requestURI) {
+            case "/member/edit":{
+                System.out.println("member/edit");
+                BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
+                String jsonStr = in.readLine();
 
-            JSONObject jsonResult = new JSONObject();
-            try {
-                MemberDAO memberDAO = new MemberDAO();
-                Member member = Member.builder()
-                        .userId(uid)
-                        .pwd(pwd)
-                        .name(name)
-                        .phone(phone)
-                        .email(email)
-                        .isAdmin(false)
-                        .userStatus(MemberCode.MEMBER_STATUS_ING)
-                        .createdate(LocalDateTime.now())
-                        .build();
+                JSONObject jsonMember = new JSONObject(jsonStr);
+                System.out.println(jsonMember);
+                HttpSession session = request.getSession();
+                String uid = (String) session.getAttribute("login_id");
+                JSONObject jsonResult = new JSONObject();
+                try {
+                    MemberDAO memberDAO = new MemberDAO();
+                    Member member = memberDAO.viewMember(uid);
+                    String name = (String) jsonMember.get("name");
+                    String email = (String) jsonMember.get("email");
+                    System.out.println("email:"+email);
+                    String phone = (String) jsonMember.get("phone");
 
-                memberDAO.insertMember(member);
-                jsonResult.put("status", true);
-                jsonResult.put("url", "index.jsp");
-                jsonResult.put("message", "회원가입 성공");
-            } catch (NamingException e) {
-                jsonResult.put("status", false);
-                jsonResult.put("message", "해당 아이디는 현재 사용중인 아이디입니다.");
-            } catch (Member.ExistMember e) {
-                throw new RuntimeException(e);
+                    member.setName(name);
+                    member.setPhone(phone);
+                    member.setEmail(email);
+                    boolean result = memberDAO.edit(member);
+                    if(!result){
+                        jsonResult.put("status", false);
+                        jsonResult.put("message", "수정 실패");
+                    }else {
+                        jsonResult.put("status", true);
+                        jsonResult.put("url", "view");
+                        jsonResult.put("message", "수정 성공");
+                    }
+                } catch (NamingException e) {
+                    jsonResult.put("status", false);
+                    jsonResult.put("message", "수정 실패");
+                }
+                PrintWriter out = response.getWriter();
+                out.println(jsonResult);
+                break;
             }
-            PrintWriter out = response.getWriter();
-            out.println(jsonResult);
+            case "/member/insert":
+                System.out.println("member/insert");
+                BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
+                String jsonStr = in.readLine();
+
+                JSONObject jsonMember = new JSONObject(jsonStr);
+                String uid = (String) jsonMember.get("id");
+                String pwd = (String) jsonMember.get("pwd");
+                String name = (String) jsonMember.get("userName");
+                String email = (String) jsonMember.get("email");
+                String phone = (String) jsonMember.get("phone");
+
+                JSONObject jsonResult = new JSONObject();
+                try {
+                    MemberDAO memberDAO = new MemberDAO();
+                    Member member = Member.builder()
+                            .userId(uid)
+                            .pwd(pwd)
+                            .name(name)
+                            .phone(phone)
+                            .email(email)
+                            .isAdmin(false)
+                            .userStatus(MemberCode.MEMBER_STATUS_ING)
+                            .createdate(LocalDateTime.now())
+                            .build();
+
+                    memberDAO.insertMember(member);
+                    jsonResult.put("status", true);
+                    jsonResult.put("url", "index.jsp");
+                    jsonResult.put("message", "회원가입 성공");
+                } catch (NamingException e) {
+                    jsonResult.put("status", false);
+                    jsonResult.put("message", "해당 아이디는 현재 사용중인 아이디입니다.");
+                } catch (Member.ExistMember e) {
+                    throw new RuntimeException(e);
+                }
+                PrintWriter out = response.getWriter();
+                out.println(jsonResult);
+                break;
         }
+
+
     }
 }
