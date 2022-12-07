@@ -12,9 +12,9 @@ import java.util.Set;
 @WebFilter(
         urlPatterns = "/*",
         initParams = {
-                @WebInitParam(name="no.auth.urls", value="login.jsp"),
+                @WebInitParam(name="no.auth.urls", value="/jsp/login.jsp"),
                 @WebInitParam(name="no.auth.urls", value="/login"),
-                @WebInitParam(name="login.url", value="/login.jsp"),
+                @WebInitParam(name="login.url", value="/jsp/login.jsp"),
                 @WebInitParam(name="encoding", value="utf-8")
         }
 )
@@ -33,9 +33,9 @@ public class EncoderFilter implements Filter {
         authUrls.add("/login");
         authUrls.add("/member/dupUidCheck");
         authUrls.add("/member/insert");
-        authUrls.add("/login.jsp");
-        authUrls.add("/register.jsp");
-        authUrls.add("/register.html");
+        authUrls.add("/jsp/login.jsp");
+        authUrls.add("/jsp/register.jsp");
+        authUrls.add("/jsp/register.html");
     }
 
     public void destroy() {

@@ -21,7 +21,6 @@ public class AdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("AdminServlet doGet > ");
         String requestURI = request.getRequestURI();
         try {
             memberDAO = new MemberDAO();
@@ -38,7 +37,7 @@ public class AdminServlet extends HttpServlet {
                 List<Member> member = memberDAO.list(search);
                 request.setAttribute("member", member);
 
-                dispatch = request.getRequestDispatcher("/member/list.jsp");
+                dispatch = request.getRequestDispatcher("/jsp/admin/list.jsp");
                 dispatch.forward(request, response);
 
                 break;

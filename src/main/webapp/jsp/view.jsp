@@ -23,8 +23,9 @@ view.jsp 페이지 <br/>
     user registerDate <span>${member.createdate}</span><br/>
     user loginDate : <span>${member.loginDateTime} </span><br/>
 </form>
+<br/><a href="#" id="withdraw">탈퇴</a>
 
-<a href="logout">로그아웃</a><br/>
+<a href="logout">로그아웃</a><br/><br/>
 <a href="${pageContext.request.contextPath}/">main</a>
 <script>
     <%--let form = document.querySelector("#editForm");--%>
@@ -83,6 +84,18 @@ view.jsp 페이지 <br/>
                 if(jsonResult.status){
                     location.href = jsonResult.url;
                 }
+            });
+    }
+
+    let withdrawButton = document.querySelector("#withdraw");
+    withdrawButton.onclick = (event) => {
+        event.preventDefault();
+
+        fetch('${pageContext.request.contextPath}/member/withdraw')
+            .then(response => response.json())
+            .then(jsonResult => {
+                alert(jsonResult.message);
+                location.href = jsonResult.url;
             });
     }
 </script>

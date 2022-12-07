@@ -16,7 +16,7 @@ public class BoardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("BoardServlet doGet > ");
         String requestURI = request.getRequestURI();
-        BoardDAO boardDAO = null;
+        BoardDAO boardDAO;
         try {
             boardDAO = new BoardDAO();
         } catch (NamingException e) {
@@ -28,7 +28,7 @@ public class BoardServlet extends HttpServlet {
                 List<Board> boardsList = boardDAO.list("");
 
                 request.setAttribute("boardsList", boardsList);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/notice/list.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/notice/list.jsp");
 
                 dispatcher.forward(request, response);
 
@@ -41,10 +41,13 @@ public class BoardServlet extends HttpServlet {
                 boardDAO.addHit(no);
                 System.out.println(board);
                 request.setAttribute("board", board);
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/notice/view.jsp");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/notice/view.jsp");
                 dispatcher.forward(request, response);
 
                 break;
+            }
+            case "/board/notice/add":{
+
             }
 
             default:

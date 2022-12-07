@@ -26,7 +26,6 @@ public class LoginServlet extends HttpServlet {
     private void doHandle(HttpServletRequest request, HttpServletResponse response){
         try {
             String user_id = request.getParameter("user_id");
-            String user_pw = request.getParameter("user_pw");
 
             MemberDAO dao = new MemberDAO();
             Member m = dao.viewMember(user_id);
@@ -40,7 +39,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("login_name", m.getName());
             session.setAttribute("login_admin", m.isAdmin());
 
-            dispatch = request.getRequestDispatcher("/index.jsp");
+            dispatch = request.getRequestDispatcher("/jsp/index.jsp");
             dispatch.forward(request, response);
         } catch (NamingException | IOException | ServletException e) {
             throw new RuntimeException(e);
@@ -51,11 +50,11 @@ public class LoginServlet extends HttpServlet {
         RequestDispatcher dispatch;
         if(m == null){
             request.setAttribute("errorMsg", "아이디 및 비밀번호를 확인하세요.");
-            dispatch = request.getRequestDispatcher("/login.jsp");
+            dispatch = request.getRequestDispatcher("/jsp/login.jsp");
             dispatch.forward(request, response);
         }else if(m.getUserStatus().equals("STOP")){
             request.setAttribute("errorMsg", "정지된 회원입니다.");
-            dispatch = request.getRequestDispatcher("/login.jsp");
+            dispatch = request.getRequestDispatcher("/jsp/login.jsp");
             dispatch.forward(request, response);
         }
     }

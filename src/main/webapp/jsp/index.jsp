@@ -16,12 +16,12 @@
 회원님의 아이디는.. ${login_id} <br/>
 ${login_name} <br/>
 
-<a href="/member/view">내정보 보기</a>
+<a href="${pageContext.request.contextPath}/member/view">내정보 보기</a>
 <c:if test="${true eq login_admin}">
     <a href="${pageContext.request.contextPath}/admin/memberList">회원 리스트 보기</a>
 </c:if>
-<a href="${pageContext.request.contextPath}/board/notice">boardList</a>
-<a href="/chat">chatting</a>
+<a href="${pageContext.request.contextPath}/board/notice">공지사항</a>
+<a href="/chat">채팅</a>
 <a href="logout">로그아웃</a> <br/>
 </body>
 </html>
