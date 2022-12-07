@@ -4,10 +4,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,5 +83,27 @@ public class BoardDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean insert(Board board){
+        try {
+            System.out.println("insert:"+board);
+
+            String query = "insert into boards(btitle, bwriter, bcontent, bhit) " +
+                    "values (?, ?, ?, ?)";
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setString(1, board.getBtitle());
+            pstmt.setString(2, board.getBwriter());
+            pstmt.setString(3, board.getBcontent());
+            pstmt.setInt(4, board.getBhit());
+//            pstmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+
+            int result = pstmt.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
