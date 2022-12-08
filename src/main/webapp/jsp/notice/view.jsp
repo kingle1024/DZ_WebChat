@@ -12,9 +12,30 @@
     <title>글 상세</title>
 </head>
 <body>
-    ${board.bno} <br/>
-    ${board.btitle} <br/>
-    ${board.bcontent} <br/>
-    ${board.bdate}
+<c:if test="${board.bwriterId eq login_id}">
+    <a href="${pageContext.request.contextPath}/board/notice/edit?bno=${board.bno}">수정</a><br/>
+    <button id="del">삭제</button><br/>
+</c:if>
+
+${board.bno} <br/>
+${board.btitle} <br/>
+${board.bcontent} <br/>
+${board.bdate}
+<script>
+    let delButton = document.querySelector("#del");
+    let bno = ${board.bno};
+    delButton.onclick = (event) => {
+        fetch('/board/del?bno='+ bno)
+            .then(response => response.json())
+            .then(jsonResult => {
+                alert(jsonResult.message);
+                if(jsonResult.status === true) {
+                    // location.href = jsonResult.url;
+                    history.back();
+                }
+            });
+    };
+
+</script>
 </body>
 </html>

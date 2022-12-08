@@ -16,6 +16,8 @@ public class Board {
     private String btitle;
     private String bcontent;
     private String bwriter;
+    private String bwriterId;
+    private String btype;
     private int bhit;
     private LocalDateTime bdate;
 }
