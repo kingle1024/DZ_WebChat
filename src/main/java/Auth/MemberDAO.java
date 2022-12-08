@@ -35,23 +35,6 @@ public class MemberDAO {
             e.printStackTrace();
         }
     }
-    public boolean isExisted(Member member) throws SQLException {
-        boolean result;
-        String id = member.getUserId();
-        String pwd = member.getPwd();
-        String query = "select if(count(*) = 1, 'true', 'false') as result " +
-                "from member " +
-                "where userid = ? and pwd = ?";
-        pstmt = con.prepareStatement(query);
-        pstmt.setString(1, id);
-        pstmt.setString(2, pwd);
-        ResultSet rs = pstmt.executeQuery();
-
-        rs.next();
-        result = Boolean.parseBoolean(rs.getString("result"));
-
-        return result;
-    }
 
     public Member viewMember(String id){
         String query = "select * from member where userid = ?";
@@ -136,8 +119,6 @@ public class MemberDAO {
             List<Member> members = new ArrayList<>();
 
             while(rs.next()){
-
-
                 Member m = Member.builder()
                         .userId(rs.getString("userid"))
                         .name(rs.getString("name"))
@@ -146,7 +127,6 @@ public class MemberDAO {
                         .isAdmin(rs.getBoolean("isAdmin"))
                         .userStatus(rs.getString("userStatus"))
                         .createdate(rs.getTimestamp("createdate").toLocalDateTime())
-//                        .loginDateTime(rs.getTimestamp("LOGINDATETIME").toLocalDateTime())
                         .build();
 
                 Timestamp loginDateTime = rs.getTimestamp("LOGINDATETIME");
@@ -158,6 +138,43 @@ public class MemberDAO {
                 members.add(m);
             }
             return members;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public Member searchId(Member member){
+        String query = "select * from member where name = ? and email = ?";
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, member.getName());
+            pstmt.setString(2, member.getEmail());
+            ResultSet rs = pstmt.executeQuery();
+            Member resultMember = null;
+            if(rs.next()){
+                resultMember = Member.builder()
+                        .userId(rs.getString("USERID"))
+                        .build();
+            }
+            return resultMember;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Member searchPwd(Member member){
+        String query = "select * from member where userid = ? and phone = ?";
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, member.getUserId());
+            pstmt.setString(2, member.getPhone());
+            ResultSet rs = pstmt.executeQuery();
+            Member resultMember = null;
+            if(rs.next()){
+                resultMember = Member.builder()
+                        .pwd(rs.getString("PWD"))
+                        .build();
+            }
+            return resultMember;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
