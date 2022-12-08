@@ -13,7 +13,7 @@
 <body>
   ${errorMsg}
   <form action="${pageContext.request.contextPath}/login" name="frmLogin" method="post">
-    아이디 <label><input type="text" name="user_id"></label><br/>
+    아이디 <label><input type="text" name="user_id" autofocus></label><br/>
 
     비밀번호 <label><input type="password" name="user_pw"></label><br/>
     <input type="submit" value="로그인">

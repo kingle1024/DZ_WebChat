@@ -13,7 +13,7 @@
 </head>
 <body>
 <form name="searchForm" id="searchForm" action="memberList" method="get">
-    <label for="search"></label><input type="text" placeholder="검색할 이름 입력" id="search" name="search">
+    <label for="search"></label><input type="text" placeholder="검색할 이름 입력" id="search" name="search" autofocus>
     <input type="submit" value="검색">
 </form>
 <table>
