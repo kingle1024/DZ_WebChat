@@ -116,7 +116,7 @@ public class BoardDAO {
             pstmt.setString(2, board.getBwriter());
             pstmt.setString(3, board.getBcontent());
             pstmt.setInt(4, board.getBhit());
-            pstmt.setString(5, board.getBtype());
+            pstmt.setString(5, board.getType());
             pstmt.setString(6, board.getBwriterId());
 //            pstmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
 

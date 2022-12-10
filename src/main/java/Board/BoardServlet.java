@@ -134,7 +134,6 @@ public class BoardServlet extends HttpServlet {
                     String writerId = (String) session.getAttribute("login_id");
                     String content = (String) jsonObject.get("content");
                     String type = (String) jsonObject.get("type");
-                    System.out.println("type"+type);
 
                     // TODO 등록한 계정이 관리자가 아닐 때에 바로 리턴 처리
 //                    int isAdmin = () session.getAttribute("login_admin");
@@ -145,7 +144,7 @@ public class BoardServlet extends HttpServlet {
                             .bcontent(content)
                             .bhit(0)
                             .bdate(LocalDateTime.now())
-                            .btype(type)
+                            .type(type)
                             .bwriterId(writerId)
                             .build();
                     boolean result = boardDAO.insert(board);
@@ -187,7 +186,6 @@ public class BoardServlet extends HttpServlet {
                     board.setBcontent(bcontent);
 
                     boolean result = boardDAO.edit(board);
-                    System.out.println("===============");
                     if(!result && !uid.equals(board.getBwriterId())){
                         jsonResult.put("status", false);
                         jsonResult.put("message", "수정 실패");

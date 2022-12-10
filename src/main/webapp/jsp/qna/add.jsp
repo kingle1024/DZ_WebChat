@@ -10,13 +10,13 @@
 <head>
     <title>글쓰기</title>
     <style>
-        /* 넓이 높이 조절 */
-        .ck.ck-editor {
-            max-width: 1000px;
-        }
-        .ck-editor__editable {
-            min-height: 300px;
-        }
+    /* 넓이 높이 조절 */
+    .ck.ck-editor {
+    max-width: 1000px;
+    }
+    .ck-editor__editable {
+    min-height: 300px;
+    }
 
     </style>
     <script src="https://cdn.ckeditor.com/ckeditor5/35.3.2/classic/ckeditor.js"></script>
@@ -27,7 +27,7 @@
 <form id="form" method="post">
     제목 : <input type="text" name="title" id="title">
     내용
-    <%--    : <input type="text" name="content" id="content">--%>
+<%--    : <input type="text" name="content" id="content">--%>
     <textarea name="editor" id="editor"></textarea>
 
     <input type="submit" id="insertButton" value="제출">
@@ -47,7 +47,7 @@
         let param = {
             "title" : document.getElementById("title").value,
             "content" : content,
-            "type" : "notice"
+            "type" : "qna"
         }
         event.preventDefault();
         fetch('${pageContext.request.contextPath}/board/notice/insert', {
@@ -59,9 +59,9 @@
         })
             .then(response => response.json())
             .then(jsonResult => {
-                alert(jsonResult.message);
-                if(jsonResult.status === true)
-                    location.href = jsonResult.url;
+               alert(jsonResult.message);
+               if(jsonResult.status === true)
+                location.href = jsonResult.url;
             });
     });
 
