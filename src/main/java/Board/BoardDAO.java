@@ -30,9 +30,6 @@ public class BoardDAO {
             if (pstmt != null) {
                 pstmt.close();
             }
-            if (con != null) {
-                con.close();
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
