@@ -12,7 +12,7 @@
     document.getElementById("addRoom").onclick = () => {
         let roomName = document.getElementById("roomName").value;
         let roomList = document.getElementById("roomList");
-        roomList.innerHTML += "<a href='#' onclick='OpenChatRoom(roomName.value)' >"+roomName+"</a> | 입장자 수 0";
+        roomList.innerHTML += "<a href='#' onclick='OpenChatRoom(roomName.value)' >"+roomName+"</a> | 입장자 수 0 <br/>";
     };
     // 「WebSocketEx」는 프로젝트 명
     // 「broadsocket」는 호스트 명
@@ -60,7 +60,7 @@
     }
     function OpenChatRoom(roomName) {
         window.open("/chat/add?p="+roomName,
-            "PasswordGuide",
+            "OpenChatRoom",
             "toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=yes,copyhistory=0, width=500, height=820"
         );
     }
