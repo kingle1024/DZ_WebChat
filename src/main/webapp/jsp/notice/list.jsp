@@ -17,6 +17,10 @@
     <a href="/jsp/notice/add.jsp">글쓰기</a>
 </c:if>
 <a href="${pageContext.request.contextPath}/board/notice">공지사항</a>
+<form name="searchForm" id="searchForm" action="notice" method="get">
+    <label for="search"></label><input type="text" placeholder="검색할 제목 입력" id="search" name="search" autofocus>
+    <input type="submit" value="검색">
+</form>
 <table>
     <thead>
         <tr>
