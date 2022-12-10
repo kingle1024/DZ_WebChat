@@ -8,7 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<head><title>Web Socket Example</title></head>
+<head><title>채팅 페이지</title></head>
 <body>
 <form>
     <!-- 유저 명을 입력하는 텍스트 박스(기본 값은 anonymous(익명)) -->
@@ -52,19 +52,26 @@
     };
     /// WebSocket 서버로 부터 메시지가 오면 호출되는 함수
     webSocket.onmessage = function(message) {
+        console.log(message);
+        console.log(message.message);
         // 콘솔 텍스트에 메시지를 출력한다.
         messageTextArea.value += message.data + "\n";
     };
     // Send 버튼을 누르면 호출되는 함수
     function sendMessage() {
-        // 유저명 텍스트 박스 오브젝트를 취득
+        // 유저명 텍스트x 박스 오브젝트를 취득
         const user = document.getElementById("user").textContent;
         // 송신 메시지를 작성하는 텍스트 박스 오브젝트를 취득
         const message = document.getElementById("textMessage");
         // 콘솔 텍스트에 메시지를 출력한다.
-        messageTextArea.value += user + "(me) => " + message.value + "\n";
         // WebSocket 서버에 메시지를 전송(형식 「{{유저명}}메시지」)
-        webSocket.send(user+"(상대방) => " + message.value);
+        const json = {
+            "message": message.value,
+            "sender": user
+        };
+
+        messageTextArea.value += "[me] " + message.value + "\n";
+        webSocket.send(JSON.stringify(json));
 
         // 송신 메시지를 작성한 텍스트 박스를 초기화한다.
         message.value = "";
