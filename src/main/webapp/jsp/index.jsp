@@ -21,7 +21,8 @@ ${login_name} <br/>
     <a href="${pageContext.request.contextPath}/admin/memberList">회원 리스트 보기</a>
 </c:if>
 <a href="${pageContext.request.contextPath}/board/notice">공지사항</a>
-<a href="/chat">채팅</a>
+<a href="${pageContext.request.contextPath}/board/qna">QnA게시판</a>
+<a href="${pageContext.request.contextPath}/chat/list?list">채팅</a>
 <a href="logout">로그아웃</a> <br/>
 </body>
 </html>
