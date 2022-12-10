@@ -25,6 +25,18 @@ public class BoardDAO {
             throw new RuntimeException(e);
         }
     }
+    private void close() {
+        try {
+            if (pstmt != null) {
+                pstmt.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public List<Board> list(String search, String type){
         try{
@@ -53,6 +65,8 @@ public class BoardDAO {
             return boards;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
 
@@ -90,6 +104,8 @@ public class BoardDAO {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
     public boolean del(String bno){
@@ -102,6 +118,8 @@ public class BoardDAO {
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
 
@@ -124,6 +142,8 @@ public class BoardDAO {
             return result > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
 
     }
@@ -142,6 +162,8 @@ public class BoardDAO {
             return result > 0 ;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
 }

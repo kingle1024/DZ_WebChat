@@ -63,10 +63,12 @@ public class MemberDAO {
                     member.setLoginDateTime(localDateTime);
                 }
             }
-
+            close();
             return member;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            close();
         }
     }
     public synchronized void insertMember(Member member) throws Member.ExistMember {
@@ -83,7 +85,6 @@ public class MemberDAO {
             pstmt.setString(5, member.getEmail());
             pstmt.setString(6, String.valueOf(LocalDateTime.now()));
             pstmt.executeUpdate();
-
         }catch (SQLException e){
             e.printStackTrace();
         }finally {
@@ -107,6 +108,8 @@ public class MemberDAO {
             return result > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
     public List<Member> list(String search){
@@ -140,6 +143,8 @@ public class MemberDAO {
             return members;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
     public Member searchId(Member member){
@@ -158,6 +163,8 @@ public class MemberDAO {
             return resultMember;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
 
@@ -177,6 +184,8 @@ public class MemberDAO {
             return resultMember;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
 
@@ -193,6 +202,8 @@ public class MemberDAO {
             return result > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
 
@@ -209,6 +220,8 @@ public class MemberDAO {
             return result > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
 
@@ -224,6 +237,8 @@ public class MemberDAO {
             return result > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }finally {
+            close();
         }
     }
 }
