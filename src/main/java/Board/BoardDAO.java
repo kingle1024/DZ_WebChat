@@ -87,6 +87,20 @@ public class BoardDAO {
             throw new RuntimeException(e);
         }
     }
+    public boolean findByNoAndPassword(String no, String password){
+        String query = "select * from boards where bno = ? and password = ?";
+        try{
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, no);
+            pstmt.setString(2, password);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            return rs.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public void addHit(String no){
         String query = "UPDATE boards " +
                 "SET bhit = bhit+1 " +

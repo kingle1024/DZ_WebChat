@@ -36,13 +36,12 @@ public class BoardServlet extends HttpServlet {
         }
 
         switch (requestURI) {
-            case "/board/notice/edit":{
+            case "/board/notice/edit": {
                 String bno = request.getParameter("bno");
                 String loginId = (String) session.getAttribute("login_id");
+
                 Board board = boardDAO.viewBoard(bno);
-                System.out.println(board);
-                System.out.println(board.getBwriter());
-                System.out.println(loginId);
+
                 if(board.getBwriterId().equals(loginId)){
                     request.setAttribute("board", board);
                     RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/notice/edit.jsp");
@@ -51,30 +50,43 @@ public class BoardServlet extends HttpServlet {
 
                 break;
             }
-            case "/board/notice": {
+
+
+            case "/board/normal/list":{
                 String search = request.getParameter("search");
                 if(search == null) search = "";
-                List<Board> boardsList = boardDAO.list(search, "notice");
+                String type = request.getParameter("type");
+                List<Board> boardsList = boardDAO.list(search, type);
                 request.setAttribute("boardsList", boardsList);
+                request.setAttribute("type", type);
+
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/normal/list.jsp");
+                dispatcher.forward(request, response);
+
+                break;
+            }
+            case "/board/list":{
+                String search = request.getParameter("search");
+                if(search == null) search = "";
+                String type = request.getParameter("type");
+                List<Board> boardsList = boardDAO.list(search, type);
+                request.setAttribute("boardsList", boardsList);
+                request.setAttribute("type", type);
 
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/notice/list.jsp");
                 dispatcher.forward(request, response);
 
                 break;
             }
-            case "/board/qna":{
-                System.out.println("board/qna comm..");
-                String search = request.getParameter("search");
-                if(search == null) search = "";
-                List<Board> boardsList = boardDAO.list(search, "qna");
-                request.setAttribute("boardsList", boardsList);
-
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/notice/list.jsp");
+            case "/board/normal/view":{
+                String no = request.getParameter("no");
+                boardDAO.addHit(no);
+                Board board = boardDAO.viewBoard(no);
+                request.setAttribute("board", board);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/normal/view.jsp");
                 dispatcher.forward(request, response);
-
                 break;
             }
-
             case "/board/notice/view":{
                 String no = request.getParameter("no");
                 boardDAO.addHit(no);
@@ -123,7 +135,40 @@ public class BoardServlet extends HttpServlet {
         }
 
         switch (requestURI) {
-            case "/board/notice/insert":{
+            case "/board/normal/insert":{
+                try {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
+                    String jsonStr = in.readLine();
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    String type = (String) jsonObject.get("type");
+
+                    Board board = Board.builder()
+                            .btitle((String) jsonObject.get("title"))
+                            .bwriter((String) jsonObject.get("writer"))
+                            .bcontent((String) jsonObject.get("content"))
+                            .type(type)
+                            .build();
+                    boolean result = boardDAO.insert(board);
+
+                    JSONObject jsonResult = new JSONObject();
+
+                    if (!result) {
+                        jsonResult.put("status", false);
+                        jsonResult.put("message", "등록 실패");
+                    }else {
+                        jsonResult.put("status", true);
+                        jsonResult.put("url", "/board/list?type="+type);
+                        jsonResult.put("message", "등록 성공");
+                    }
+                    System.out.println(jsonResult);
+                    out.println(jsonResult);
+                    break;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+            case "/board/insert":{
                 try {
                     BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
                     String jsonStr = in.readLine();
@@ -156,7 +201,7 @@ public class BoardServlet extends HttpServlet {
                         jsonResult.put("message", "등록 실패");
                     }else {
                         jsonResult.put("status", true);
-                        jsonResult.put("url", "/board/notice");
+                        jsonResult.put("url", "/board/list?type="+type);
                         jsonResult.put("message", "등록 성공");
                     }
                     System.out.println(jsonResult);
@@ -200,6 +245,35 @@ public class BoardServlet extends HttpServlet {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+            }
+            case "/board/normal/del": {
+                try {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
+                    String jsonStr = in.readLine();
+
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    String password = (String) jsonObject.get("password");
+                    int bno = (int) jsonObject.get("bno");
+                    boolean validPassword = boardDAO.findByNoAndPassword(String.valueOf(bno), password);
+                    JSONObject jsonResult = new JSONObject();
+
+                    if(!validPassword){
+                        jsonResult.put("status", false);
+                        jsonResult.put("message", "패스워드가 틀립니다.");
+                    }else if(!boardDAO.del(String.valueOf(bno))){
+                        jsonResult.put("message", "삭제 실패");
+                        jsonResult.put("status", false);
+                    }else{
+                        jsonResult.put("message", "삭제 성공");
+                        jsonResult.put("status", true);
+                        jsonResult.put("url", "board/normal/list?type=normal");
+                    }
+
+                    out.println(jsonResult);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
             }
             default : {
 
