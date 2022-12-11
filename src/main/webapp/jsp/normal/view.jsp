@@ -13,13 +13,19 @@
 </head>
 <body>
 
-<a href="${pageContext.request.contextPath}/board/notice/edit?bno=${board.bno}">수정</a><br/>
+<%--<a href="${pageContext.request.contextPath}/board/notice/edit?bno=${board.bno}">수정</a><br/>--%>
+<form method="post" action="/board/normal/editPage" id="editForm">
+    <input type="hidden" id="password" name="password">
+    <input type="hidden" id="bno" name="bno" value="${board.bno}">
+</form>
+<button id="edit">수정</button><br/>
 <button id="del">삭제</button><br/>
 
-${board.bno} <br/>
-${board.btitle} <br/>
-${board.bcontent} <br/>
-${board.bdate}
+번호 : ${board.bno} <br/>
+등록자 : ${board.bwriter} <br/>
+제목 : ${board.btitle} <br/>
+내용 : ${board.bcontent} <br/>
+날짜 : ${board.bdate}
 <script>
     let delButton = document.querySelector("#del");
     let bno = ${board.bno};
@@ -46,8 +52,34 @@ ${board.bdate}
             });
     }
 
+    let editButton = document.querySelector("#edit");
+    editButton.onclick = () => {
+        passwordCheck();
+    }
 
+    async function passwordCheck(){
+        let password = prompt("게시글의 암호를 입력하세요.");
+        let param = {
+            "bno": bno,
+            "password": password
+        }
 
+        let response = await fetch('/board/normal/passwordCheck', {
+            method : 'POST',
+            headers :{
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify(param)
+        });
+        let jsonResult = await response.json();
+
+        if(jsonResult.status === true){
+            document.getElementById("password").value = password;
+            document.getElementById("editForm").submit();
+        }else{
+            alert(jsonResult.message);
+        }
+    }
 </script>
 </body>
 </html>

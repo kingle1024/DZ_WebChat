@@ -23,9 +23,7 @@
     </c:otherwise>
 </c:choose>
 
-<c:if test="${true eq login_admin}">
-    <a href="/jsp/normal/add.jsp">글쓰기</a> <br/>
-</c:if>
+<a href="/jsp/normal/add.jsp">글쓰기</a> <br/>
 <form name="searchForm" id="searchForm" action="" method="get">
     <label for="search"></label><input type="text" placeholder="검색할 제목 입력" id="search" name="search" autofocus>
     <input type="submit" value="검색">

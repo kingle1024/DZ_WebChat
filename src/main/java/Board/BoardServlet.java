@@ -141,23 +141,29 @@ public class BoardServlet extends HttpServlet {
                     String jsonStr = in.readLine();
                     JSONObject jsonObject = new JSONObject(jsonStr);
                     String type = (String) jsonObject.get("type");
+                    String password = (String) jsonObject.get("password");
+                    String rePassword = (String) jsonObject.get("rePassword");
 
                     Board board = Board.builder()
                             .btitle((String) jsonObject.get("title"))
                             .bwriter((String) jsonObject.get("writer"))
                             .bcontent((String) jsonObject.get("content"))
+                            .password(password)
                             .type(type)
                             .build();
                     boolean result = boardDAO.insert(board);
 
                     JSONObject jsonResult = new JSONObject();
 
-                    if (!result) {
+                    if(!password.equals(rePassword)){
+                        jsonResult.put("status", false);
+                        jsonResult.put("message", "비밀번호가 서로 다릅니다.");
+                    }else if (!result) {
                         jsonResult.put("status", false);
                         jsonResult.put("message", "등록 실패");
                     }else {
                         jsonResult.put("status", true);
-                        jsonResult.put("url", "/board/list?type="+type);
+                        jsonResult.put("url", "/board/normal/list?type="+type);
                         jsonResult.put("message", "등록 성공");
                     }
                     System.out.println(jsonResult);
@@ -191,6 +197,7 @@ public class BoardServlet extends HttpServlet {
                             .bdate(LocalDateTime.now())
                             .type(type)
                             .bwriterId(writerId)
+                            .password("")
                             .build();
                     boolean result = boardDAO.insert(board);
                     JSONObject jsonResult = new JSONObject();
@@ -205,6 +212,48 @@ public class BoardServlet extends HttpServlet {
                         jsonResult.put("message", "등록 성공");
                     }
                     System.out.println(jsonResult);
+                    out.println(jsonResult);
+                    break;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            case "/board/normal/edit":{
+                try {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
+                    String jsonStr = in.readLine();
+
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    JSONObject jsonResult = new JSONObject();
+
+                    int bno = (int) jsonObject.get("bno");
+                    Board board = boardDAO.viewBoard(String.valueOf(bno));
+                    String password = (String) jsonObject.get("password");
+                    System.out.println(password +" " +board.getPassword());
+                    if(!password.equals(board.getPassword())){
+                        jsonResult.put("status", false);
+                        jsonResult.put("message", "비밀번호가 틀립니다.");
+                        out.println(jsonResult);
+                        return;
+                    }
+
+                    String btitle = (String) jsonObject.get("btitle");
+                    String bcontent = (String) jsonObject.get("bcontent");
+                    String bwriter = (String) jsonObject.get("bwriter");
+
+                    board.setBtitle(btitle);
+                    board.setBcontent(bcontent);
+                    board.setBwriter(bwriter);
+
+                    boolean result = boardDAO.edit(board);
+                    if(!result){
+                        jsonResult.put("status", false);
+                        jsonResult.put("message", "수정 실패");
+                    }else{
+                        jsonResult.put("status", true);
+                        jsonResult.put("message", "수정 성공");
+                        jsonResult.put("url", "/board/normal/view?no="+bno);
+                    }
                     out.println(jsonResult);
                     break;
                 } catch (IOException e) {
@@ -274,6 +323,51 @@ public class BoardServlet extends HttpServlet {
                     throw new RuntimeException(e);
                 }
                 break;
+            }
+            case "/board/normal/passwordCheck":{
+                try {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
+                    String jsonStr = in.readLine();
+
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    String password = (String) jsonObject.get("password");
+                    int bno = (int) jsonObject.get("bno");
+                    boolean validPassword = boardDAO.findByNoAndPassword(String.valueOf(bno), password);
+                    JSONObject jsonResult = new JSONObject();
+                    if(validPassword){
+                        jsonResult.put("status", true);
+                    }else{
+                        jsonResult.put("status", false);
+                        jsonResult.put("message", "비밀번호가 틀립니다.");
+                    }
+                    out.println(jsonResult);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            }
+            case "/board/normal/editPage":{
+                try{
+                    String password = request.getParameter("password");
+                    int bno = Integer.parseInt(request.getParameter("bno"));
+
+                    boolean validPassword = boardDAO.findByNoAndPassword(String.valueOf(bno), password);
+
+                    if(!validPassword){
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("/board/normal/view?no="+bno);
+                        dispatcher.forward(request, response);
+                    }else{
+                        Board board = boardDAO.viewBoard(String.valueOf(bno));
+                        request.setAttribute("board", board);
+                        request.setAttribute("password", password);
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/normal/edit.jsp");
+                        dispatcher.forward(request, response);
+                    }
+                }catch(IOException | ServletException e){
+                    throw new RuntimeException(e);
+                }
+                break;
+
             }
             default : {
 

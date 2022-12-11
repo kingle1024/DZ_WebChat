@@ -18,6 +18,7 @@ public class Board {
     private String bwriter;
     private String bwriterId;
     private String type;
+    private String password;
     private int bhit;
     private LocalDateTime bdate;
 }

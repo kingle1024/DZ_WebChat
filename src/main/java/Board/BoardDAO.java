@@ -80,6 +80,7 @@ public class BoardDAO {
                         .bwriter(rs.getString("bwriter"))
                         .bwriterId(rs.getString("bwriterId"))
                         .bhit(rs.getInt("bhit"))
+                        .password(rs.getString("password"))
                         .build();
             }
             return board;
@@ -140,8 +141,8 @@ public class BoardDAO {
     public boolean insert(Board board){
         try {
             String query = "insert into boards" +
-                    "(btitle, bwriter, bcontent, bhit, type, isDelete, bwriterId) " +
-                    "values (?, ?, ?, ?, ?, 0, ?)";
+                    "(btitle, bwriter, bcontent, bhit, type, isDelete, bwriterId, password) " +
+                    "values (?, ?, ?, ?, ?, 0, ?, ?)";
             pstmt = con.prepareStatement(query);
 
             pstmt.setString(1, board.getBtitle());
@@ -150,6 +151,7 @@ public class BoardDAO {
             pstmt.setInt(4, board.getBhit());
             pstmt.setString(5, board.getType());
             pstmt.setString(6, board.getBwriterId());
+            pstmt.setString(7, board.getPassword());
 //            pstmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
 
             int result = pstmt.executeUpdate();
@@ -159,18 +161,18 @@ public class BoardDAO {
         }finally {
             close();
         }
-
     }
 
     public boolean edit(Board board) {
         String query = "update boards " +
-                "set btitle = ?, bcontent = ? " +
+                "set btitle = ?, bcontent = ?, bwriter = ? " +
                 "where bno = ?";
         try {
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, board.getBtitle());
             pstmt.setString(2, board.getBcontent());
-            pstmt.setString(3, board.getBno());
+            pstmt.setString(3, board.getBwriter());
+            pstmt.setString(4, board.getBno());
 
             int result = pstmt.executeUpdate();
             return result > 0 ;
