@@ -30,17 +30,22 @@
 <%--  <input type="text" name="bcontent" id="bcontent" value="${board.bcontent}"> <br/>--%>
   <button id="edit">수정</button>
 <script>
+    let editor;
     ClassicEditor
         .create( document.querySelector( '#editor' ), {language : "ko"} )
+        .then( newEditor => {
+            editor = newEditor;
+        } )
         .catch( error => {
             console.error( error );
         } );
 
   let editButton = document.getElementById("edit");
   editButton.onclick = (event) => {
+
       let param = {
           "btitle" : document.getElementById("btitle").value,
-          "bcontent" : document.getElementById("editor").value,
+          "bcontent" : editor.getData(),
           "bno" : ${board.bno}
       }
 

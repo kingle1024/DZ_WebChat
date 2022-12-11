@@ -181,6 +181,7 @@ public class BoardServlet extends HttpServlet {
 
                     String btitle = (String) jsonObject.get("btitle");
                     String bcontent = (String) jsonObject.get("bcontent");
+                    System.out.println("bcontent:"+bcontent);
 
                     board.setBtitle(btitle);
                     board.setBcontent(bcontent);
