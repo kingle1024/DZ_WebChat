@@ -4,10 +4,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,17 +103,23 @@ public class BoardDAO {
         }
     }
     public boolean del(String bno){
-        String query  = "UPDATE boards " +
-                "SET isDelete = 1 " +
-                "WHERE bno = ? ";
+        CallableStatement cstmt = null;
         try {
-            pstmt = con.prepareStatement(query);
-            pstmt.setString(1, bno);
-            return pstmt.executeUpdate() > 0;
+            cstmt = con.prepareCall("{call DEL_MEMBER(?)}");
+            cstmt.setString(1, bno);
+            return cstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
-            close();
+            callableClose(cstmt);
+        }
+    }
+
+    private static void callableClose(CallableStatement cstmt) {
+        try {
+            if(cstmt != null) cstmt.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
