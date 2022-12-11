@@ -55,7 +55,7 @@ public class BoardServlet extends HttpServlet {
             case "/board/normal/list":{
                 String search = request.getParameter("search");
                 if(search == null) search = "";
-                String type = request.getParameter("type");
+                String type = "normal";
                 List<Board> boardsList = boardDAO.list(search, type);
                 request.setAttribute("boardsList", boardsList);
                 request.setAttribute("type", type);
