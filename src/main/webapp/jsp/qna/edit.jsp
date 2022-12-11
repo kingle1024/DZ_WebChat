@@ -19,8 +19,12 @@
   내용 <textarea name="editor" id="editor"></textarea> <br/>
   <button id="edit">수정</button>
 <script>
+    let editor;
     ClassicEditor
         .create( document.querySelector( '#editor' ), {language : "ko"} )
+        .then (newEditor => {
+            editor = newEditor;
+        })
         .catch( error => {
             console.error( error );
         } );
@@ -29,7 +33,7 @@
   editButton.onclick = () => {
       let param = {
           "btitle" : document.getElementById("btitle").value,
-          "bcontent" : document.getElementById("editor").value,
+          "bcontent" : editor.getData(),
           "bno" : ${board.bno}
       }
 
