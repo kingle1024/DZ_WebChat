@@ -9,7 +9,6 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,9 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @ServerEndpoint(value = "/broadsocket/{roomName}", configurator = WebSocketSessionConfigurator.class)
 public class BroadSocket {
 //    private Map<Session, EndpointConfig> configs = Collections.synchronizedMap(new HashMap<>());
-    private static Map<String, HashSet<String>> roomAndUserSet = new ConcurrentHashMap<>();
+    private static final Map<String, HashSet<String>> roomAndUserSet = new ConcurrentHashMap<>();
     private static final Map<String, Session> userAndSocketSession = new HashMap<>();
-    private static Map<String, Integer> roomAndParticipantsCount = new HashMap<>();
+    private static final Map<String, Integer> roomAndParticipantsCount = new HashMap<>();
     private EndpointConfig endpointConfig;
     // handshake가 끝나면 handleOpen이 호출된다.
     @OnOpen
@@ -42,10 +41,7 @@ public class BroadSocket {
         HashSet<String> userList = roomAndUserSet.getOrDefault(roomName, new HashSet<>());
 
         // 방이 있으면 해당 방에 본인이 있는지 확인
-        if(userList.size() < 1 || !userList.contains(userId)){
-            userList.add(userId);
-            System.out.println("userList:"+userList);
-        }
+        userList.add(userId);
 
         // 갱신된 정보를 다시 맵에 넣음
         roomAndUserSet.put(roomName, userList);
@@ -67,6 +63,29 @@ public class BroadSocket {
         }else{
             sendToClient(message, userSession, userList);
         }
+    }
+
+    @OnClose
+    public void handleClose(Session socketSession, @PathParam("roomName") String roomName) {
+        System.out.println("client is now disconnected...");
+
+        // index 페이지에서도 새로고침하면 close가 발생한다.
+        // 채팅 브라우저 새로고침하면 -1, +1
+        // 채팅 브라우저를 닫으면 -1
+        if(!isListPage(socketSession)){
+            int participantsCount = roomAndParticipantsCount.get(roomName) -1;
+            roomAndParticipantsCount.put(roomName, participantsCount);
+            HttpSession session = (HttpSession) endpointConfig.getUserProperties().get(WebSocketSessionConfigurator.Session);
+            String userId = (String) session.getAttribute("login_id");
+            userAndSocketSession.remove(userId);
+            roomAndUserSet.remove(userId);
+            if(participantsCount < 1) roomAndParticipantsCount.remove(roomName);
+        }
+    }
+
+    @OnError
+    public void handleError(Throwable e) {
+        e.printStackTrace();
     }
 
     private static void sendWhisper(Session userSession, String msg, String sender) {
@@ -92,44 +111,14 @@ public class BroadSocket {
             throw new RuntimeException(e);
         }
     }
-
-    @OnClose
-    public void handleClose(Session socketSession, @PathParam("roomName") String roomName) {
-        System.out.println("client is now disconnected...");
-
-        System.out.println("now roomAndParticipantsCount : "+ roomAndParticipantsCount);
-        // index 페이지에서도 새로고침하면 close가 발생한다.
-        // 채팅 브라우저 새로고침하면 -1, +1
-        // 채팅 브라우저를 닫으면 -1
-        if(isListPage(socketSession)){
-
-        }else{
-            if(existParticipants(roomName)) {
-                int participantsCount = roomAndParticipantsCount.get(roomName);
-                roomAndParticipantsCount.put(roomName, participantsCount -1);
-                HttpSession session = (HttpSession) endpointConfig.getUserProperties().get(WebSocketSessionConfigurator.Session);
-                String userId = (String) session.getAttribute("login_id");
-                userAndSocketSession.remove(userId);
-                roomAndUserSet.remove(userId);
-            }else
-                roomAndParticipantsCount.remove(roomName);
-        }
-    }
-
-    @OnError
-    public void handleError(Throwable e, Session userSession) {
-        e.printStackTrace();
-    }
     private static void refreshUserSocketSession(Session socketSession, String userId) {
         userAndSocketSession.put(userId, socketSession);
     }
 
     private static void sendToClient(String message, Session userSession, HashSet<String> userList) {
-        Iterator<String> it = userList.iterator();
-        while(it.hasNext()){
-            String userName = it.next();
+        for (String userName : userList) {
             Session userSocketSession = userAndSocketSession.get(userName);
-            if(userSocketSession.equals(userSession)) continue;
+            if (userSocketSession.equals(userSession)) continue;
 
             try {
                 userSocketSession.getBasicRemote().sendText(message);
@@ -152,16 +141,10 @@ public class BroadSocket {
 
     private static String getUserId (EndpointConfig config) {
         HttpSession session = (HttpSession) config.getUserProperties().get(WebSocketSessionConfigurator.Session);
-        String userId = (String) session.getAttribute("login_id");
-        return userId;
+        return (String) session.getAttribute("login_id");
     }
 
     private static boolean isListPage(Session socketSession) {
         return "list".equals(socketSession.getQueryString());
-    }
-
-    private static boolean existParticipants(String roomName) {
-        return roomAndParticipantsCount != null
-                && roomAndParticipantsCount.get(roomName) > 0;
     }
 }
