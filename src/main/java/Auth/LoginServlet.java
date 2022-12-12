@@ -58,6 +58,4 @@ public class LoginServlet extends HttpServlet {
             dispatch.forward(request, response);
         }
     }
-
-
 }

@@ -1,5 +1,7 @@
 package Board;
 
+import Page.BoardParam;
+import Page.PageUtil;
 import org.json.JSONObject;
 
 import javax.naming.NamingException;
@@ -55,10 +57,36 @@ public class BoardServlet extends HttpServlet {
             case "/board/normal/list":{
                 String search = request.getParameter("search");
                 if(search == null) search = "";
+
+                BoardParam parameter = new BoardParam();
+                String pageIndex = request.getParameter("pageIndex");
+                if(pageIndex == null) pageIndex = String.valueOf(0);
+                String pageSize = request.getParameter("pageSize");
+                if(pageSize == null) pageSize = String.valueOf(0);
+
                 String type = "normal";
-                List<Board> boardsList = boardDAO.list(search, type);
+
+                parameter.setPageIndex(Long.parseLong(pageIndex));
+                parameter.setPageSize(Long.parseLong(pageSize));
+                parameter.setSearch(search);
+                parameter.setType(type);
+                parameter.init();
+
+                long totalCount = boardDAO.listSize(search, type);
+
+                String queryString = parameter.getQueryString();
+                PageUtil pageUtil = new PageUtil(
+                        totalCount,
+                        parameter.getPageSize(),
+                        parameter.getPageIndex(),
+                        queryString
+                );
+
+                List<Board> boardsList = boardDAO.list(search, type, parameter);
                 request.setAttribute("boardsList", boardsList);
                 request.setAttribute("type", type);
+                request.setAttribute("totalCount", totalCount);
+                request.setAttribute("pager", pageUtil.paper());
 
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/normal/list.jsp");
                 dispatcher.forward(request, response);
@@ -68,10 +96,36 @@ public class BoardServlet extends HttpServlet {
             case "/board/list":{
                 String search = request.getParameter("search");
                 if(search == null) search = "";
+
+                BoardParam parameter = new BoardParam();
+                String pageIndex = request.getParameter("pageIndex");
+                if(pageIndex == null) pageIndex = String.valueOf(0);
+                String pageSize = request.getParameter("pageSize");
+                if(pageSize == null) pageSize = String.valueOf(0);
                 String type = request.getParameter("type");
-                List<Board> boardsList = boardDAO.list(search, type);
+
+                parameter.setPageIndex(Long.parseLong(pageIndex));
+                parameter.setPageSize(Long.parseLong(pageSize));
+                parameter.setSearch(search);
+                parameter.setType(type);
+                parameter.init();
+                System.out.println("parameter:"+parameter.getPageIndex() +" "+parameter.getPageSize());
+
+                List<Board> boardsList = boardDAO.list(search, type, parameter);
+                long totalCount = boardDAO.listSize(search, type);
+
+                String queryString = parameter.getQueryString();
+                PageUtil pageUtil = new PageUtil(
+                        totalCount,
+                        parameter.getPageSize(),
+                        parameter.getPageIndex(),
+                        queryString
+                );
+
                 request.setAttribute("boardsList", boardsList);
                 request.setAttribute("type", type);
+                request.setAttribute("totalCount", totalCount);
+                request.setAttribute("pager", pageUtil.paper());
 
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/notice/list.jsp");
                 dispatcher.forward(request, response);
@@ -315,7 +369,7 @@ public class BoardServlet extends HttpServlet {
                     }else{
                         jsonResult.put("message", "삭제 성공");
                         jsonResult.put("status", true);
-                        jsonResult.put("url", "board/normal/list?type=normal");
+                        jsonResult.put("url", "/board/normal/list?type=normal");
                     }
 
                     out.println(jsonResult);

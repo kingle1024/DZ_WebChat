@@ -203,7 +203,7 @@ public class MemberServlet extends HttpServlet {
                             .phone(phone)
                             .email(email)
                             .isAdmin(false)
-                            .userStatus(MemberCode.MEMBER_STATUS_ING)
+                            .userStatus("ING")
                             .createdate(LocalDateTime.now())
                             .build();
 

@@ -9,15 +9,14 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>공지사항</title>
+    <title>QnA 게시판</title>
 </head>
 <body>
 공지사항
 <c:if test="${true eq login_admin}">
-    <a href="/jsp/notice/add.jsp">글쓰기</a>
+    <a href="/jsp/qna/add.jsp">글쓰기</a>
 </c:if>
-<a href="${pageContext.request.contextPath}/board/notice">공지사항</a>
-<form name="searchForm" id="searchForm" action="notice" method="get">
+<form name="searchForm" id="searchForm" action="qna" method="get">
     <label for="search"></label><input type="text" placeholder="검색할 제목 입력" id="search" name="search" autofocus>
     <input type="submit" value="검색">
 </form>
@@ -43,5 +42,6 @@
     </c:forEach>
     </tbody>
 </table>
+<div>${pager}</div>
 </body>
 </html>

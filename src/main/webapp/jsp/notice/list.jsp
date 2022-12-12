@@ -12,13 +12,13 @@
     <title>공지사항</title>
 </head>
 <body>
-공지사항
+<h1>공지사항</h1>
 <c:if test="${true eq login_admin}">
-    <a href="/jsp/notice/add.jsp">글쓰기</a>
+    <a href="/jsp/normal/add.jsp">글쓰기</a>
 </c:if>
-<a href="${pageContext.request.contextPath}/board/notice">공지사항</a>
-<form name="searchForm" id="searchForm" action="notice" method="get">
+<form name="searchForm" id="searchForm" action="list" method="get">
     <label for="search"></label><input type="text" placeholder="검색할 제목 입력" id="search" name="search" autofocus>
+    <input type="hidden" id="type" name="type" value="${type}">
     <input type="submit" value="검색">
 </form>
 <table>
@@ -43,5 +43,6 @@
     </c:forEach>
     </tbody>
 </table>
+<div>${pager}</div>
 </body>
 </html>

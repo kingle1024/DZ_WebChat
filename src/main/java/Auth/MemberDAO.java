@@ -60,7 +60,6 @@ public class MemberDAO {
                     member.setLoginDateTime(localDateTime);
                 }
             }
-            close();
             return member;
         } catch (SQLException e) {
             throw new RuntimeException(e);

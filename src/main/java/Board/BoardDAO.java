@@ -1,6 +1,6 @@
 package Board;
 
-import Page.MemberParam;
+import Page.BoardParam;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -54,14 +54,14 @@ public class BoardDAO {
             close();
         }
     }
-    public List<Board> list(String search, String type, MemberParam memberParam){
+    public List<Board> list(String search, String type, BoardParam boardParam){
         try{
             String query = "select * " +
                     "from boards " +
                     "where isDelete = 0 " +
                     "and type = ? " +
                     "and btitle like ? " +
-                    "limit "+memberParam.getPageStart()+", " + memberParam.getPageEnd();
+                    "limit "+ boardParam.getPageStart()+", " + boardParam.getPageEnd();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, type);
             pstmt.setString(2, "%"+search+"%");

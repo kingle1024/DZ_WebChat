@@ -12,7 +12,7 @@
     <title>일반 게시판</title>
 </head>
 <body>
-공지사항
+<h1>일반 게시판</h1>
 
 <c:choose>
     <c:when test="${isLogon}">
@@ -50,5 +50,6 @@
     </c:forEach>
     </tbody>
 </table>
+<div>${pager}</div>
 </body>
 </html>
