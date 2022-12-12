@@ -1,5 +1,7 @@
 package Board;
 
+import Page.MemberParam;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -31,14 +33,35 @@ public class BoardDAO {
             e.printStackTrace();
         }
     }
+    public long listSize(String search, String type){
+        try{
+            String query = "select count(*) " +
+                    "from boards " +
+                    "where isDelete = 0 " +
+                    "and type = ? " +
+                    "and btitle like ? ";
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, type);
+            pstmt.setString(2, "%"+search+"%");
 
-    public List<Board> list(String search, String type){
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            close();
+        }
+    }
+    public List<Board> list(String search, String type, MemberParam memberParam){
         try{
             String query = "select * " +
                     "from boards " +
                     "where isDelete = 0 " +
                     "and type = ? " +
-                    "and btitle like ?";
+                    "and btitle like ? " +
+                    "limit "+memberParam.getPageStart()+", " + memberParam.getPageEnd();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, type);
             pstmt.setString(2, "%"+search+"%");
