@@ -21,20 +21,65 @@ ${board.bno} <br/>
 ${board.btitle} <br/>
 ${board.bcontent} <br/>
 ${board.bdate}
+<button id="like">좋아유 <span id="likeCount">0</span></button>
+<button id="dislike">싫어유 <span id="dislikeCount">0</span></button>
 <script>
     let delButton = document.querySelector("#del");
     let bno = ${board.bno};
-    delButton.onclick = (event) => {
-        fetch('/board/del?bno='+ bno)
+    if(delButton != null) {
+        delButton.onclick = () => {
+            fetch('/board/del?bno=' + bno)
+                .then(response => response.json())
+                .then(jsonResult => {
+                    alert(jsonResult.message);
+                    if (jsonResult.status === true) {
+                        // location.href = jsonResult.url;
+                        // TODO location으로 변경해야 함.
+                        history.back();
+                    }
+                });
+        };
+    }
+    let likeButton = document.querySelector("#like");
+    likeButton.onclick = () => {
+        let btype = "like";
+        let params = {
+            "bno" : ${board.bno},
+            "type" : btype
+        }
+        boardPopularity(params, btype);
+    }
+
+    let dislikeButton = document.querySelector("#dislike");
+    dislikeButton.onclick = () => {
+        let btype = "dislike";
+        let params = {
+            "bno" : ${board.bno},
+            "type" : btype
+        }
+        boardPopularity(params, btype);
+    }
+
+    function boardPopularity(params, btype){
+        fetch('${pageContext.request.contextPath}/board/popularity', {
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json;charset=utf-8'
+            },
+            body : JSON.stringify(params)
+        })
             .then(response => response.json())
             .then(jsonResult => {
                 alert(jsonResult.message);
-                if(jsonResult.status === true) {
-                    // location.href = jsonResult.url;
-                    history.back();
+                let count;
+                if(btype == "like"){
+                    count = document.getElementById("likeCount");
+                }else{
+                    count = document.getElementById("dislikeCount");
                 }
+                count.textContent = parseInt(count.textContent) +1;
             });
-    };
+    }
 
 </script>
 </body>

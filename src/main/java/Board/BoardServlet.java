@@ -1,5 +1,7 @@
 package Board;
 
+import BoardPopularity.BoardPopularity;
+import BoardPopularity.BoardPopularityDAO;
 import Page.BoardParam;
 import Page.PageUtil;
 import org.json.JSONObject;
@@ -22,6 +24,7 @@ import java.util.List;
 @WebServlet(name = "BoardServlet", value = "/board/*")
 public class BoardServlet extends HttpServlet {
     BoardDAO boardDAO;
+    BoardPopularityDAO boardPopularityDAO;
     PrintWriter out;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -70,7 +73,7 @@ public class BoardServlet extends HttpServlet {
                 parameter.setPageSize(Long.parseLong(pageSize));
                 parameter.setSearch(search);
                 parameter.setType(type);
-                parameter.init();
+                parameter.init(); // pageIndex, pageSize 갖고 현재 어느 페이지에 있고, 페이징을 어떻게 해줄지 초기 데이터 설정
 
                 long totalCount = boardDAO.listSize(search, type);
 
@@ -179,16 +182,57 @@ public class BoardServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String requestURI = request.getRequestURI();
         System.out.println("BoardServlet doPost > " + requestURI);
-        BoardDAO boardDAO;
+        HttpSession session = request.getSession();
 
         try {
             boardDAO = new BoardDAO();
+            boardPopularityDAO = new BoardPopularityDAO();
             out = response.getWriter();
         } catch (NamingException | IOException e) {
             throw new RuntimeException(e);
         }
 
         switch (requestURI) {
+            case "/board/popularity":{
+                try {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
+                    String jsonStr = in.readLine();
+                    JSONObject jsonObject = new JSONObject(jsonStr);
+
+                    String bno = String.valueOf(jsonObject.getInt("bno"));
+                    String type = jsonObject.getString("type");
+                    String loginId = (String) session.getAttribute("login_id");
+                    System.out.println(bno + " " + type + " " + loginId);
+
+                    BoardPopularity boardPopularity = boardPopularityDAO.findByBnoAndUserIdAndIsDelete(bno, loginId);
+                    JSONObject jsonResult = new JSONObject();
+                    if (boardPopularity == null) { // 기존에 데이터가 없는 경우
+                        boardPopularity = new BoardPopularity();
+                        boardPopularity.setBno(Integer.parseInt(bno));
+                        boardPopularity.setUserId(loginId);
+                        boardPopularity.setType(type);
+                        boardPopularityDAO.insert(boardPopularity);
+                        jsonResult.put("message", "성공");
+                        jsonResult.put("status", true);
+                    } else {
+                        // 동일한 데이터가 존재하면 제거
+                        if (boardPopularity.getType().equals(type)) {
+                            // del
+                            jsonResult.put("message", "취소되었습니다.");
+                            jsonResult.put("status", false);
+                        } else {
+                            // insert
+                            boardPopularity.setType(type);
+                            jsonResult.put("message", "처리되었습니다.");
+                            jsonResult.put("status", true);
+                        }
+                    }
+                    out.println(jsonResult);
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
+                break;
+            }
             case "/board/normal/insert":{
                 try {
                     BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
@@ -233,7 +277,7 @@ public class BoardServlet extends HttpServlet {
                     BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
                     String jsonStr = in.readLine();
                     JSONObject jsonObject = new JSONObject(jsonStr);
-                    HttpSession session = request.getSession();
+
                     String title = (String) jsonObject.get("title");
                     String writer = (String) session.getAttribute("login_name");
                     String writerId = (String) session.getAttribute("login_id");
@@ -320,7 +364,6 @@ public class BoardServlet extends HttpServlet {
                     String jsonStr = in.readLine();
 
                     JSONObject jsonObject = new JSONObject(jsonStr);
-                    HttpSession session = request.getSession();
                     String uid = (String) session.getAttribute("login_id");
                     JSONObject jsonResult = new JSONObject();
 
