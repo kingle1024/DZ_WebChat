@@ -1,33 +1,40 @@
 package Board;
 
+import BoardPopularity.BoardPopularity;
 import Page.BoardParam;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardDAO {
-    final Connection con;
+public class BoardDAO implements BoardRepository{
+    private Connection con;
 
-    PreparedStatement pstmt;
-    public BoardDAO() throws NamingException {
-        Context ctx = new InitialContext();
-        Context envContext = (Context) ctx.lookup("java:/comp/env");
-        DataSource dataFactory = (DataSource) envContext.lookup("jdbc/maria");
-        try {
+    private PreparedStatement pstmt;
+    private static DataSource dataFactory;
+
+    public static void setDataFactory(DataSource dataFactory) {
+        BoardDAO.dataFactory = dataFactory;
+    }
+
+    private void open(){
+        try{
             con = dataFactory.getConnection();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e){
+            throw new RuntimeException();
         }
     }
+
     private void close() {
         try {
             if (pstmt != null) {
                 pstmt.close();
+            }
+
+
+            if (con != null) {
+                con.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -35,6 +42,7 @@ public class BoardDAO {
     }
     public long listSize(String search, String type){
         try{
+            open();
             String query = "select count(*) " +
                     "from boards " +
                     "where isDelete = 0 " +
@@ -56,12 +64,14 @@ public class BoardDAO {
     }
     public List<Board> list(String search, String type, BoardParam boardParam){
         try{
+            open();
             String query = "select * " +
                     "from boards " +
                     "where isDelete = 0 " +
                     "and type = ? " +
                     "and btitle like ? " +
                     "limit "+ boardParam.getPageStart()+", " + boardParam.getPageEnd();
+
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, type);
             pstmt.setString(2, "%"+search+"%");
@@ -90,6 +100,7 @@ public class BoardDAO {
     public Board viewBoard(String no){
         String query = "select * from boards where bno = ?";
         try{
+            open();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, no);
             ResultSet rs = pstmt.executeQuery();
@@ -109,11 +120,14 @@ public class BoardDAO {
             return board;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            close();
         }
     }
     public boolean findByNoAndPassword(String no, String password){
         String query = "select * from boards where bno = ? and password = ?";
         try{
+            open();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, no);
             pstmt.setString(2, password);
@@ -123,6 +137,8 @@ public class BoardDAO {
             return rs.next();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            close();
         }
     }
     public void addHit(String no){
@@ -130,6 +146,7 @@ public class BoardDAO {
                 "SET bhit = bhit+1 " +
                 "WHERE bno = ?";
         try {
+            open();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, no);
 
@@ -143,13 +160,15 @@ public class BoardDAO {
     public boolean del(String bno){
         CallableStatement cstmt = null;
         try {
-            cstmt = con.prepareCall("{call DEL_MEMBER(?)}");
+            open();
+            cstmt = con.prepareCall("{call DEL_BOARD(?)}");
             cstmt.setString(1, bno);
             return cstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
             callableClose(cstmt);
+            close();
         }
     }
 
@@ -160,9 +179,48 @@ public class BoardDAO {
             throw new RuntimeException(e);
         }
     }
+    public BoardPopularity findByBnoAndUserId(String bno, String userId){
+        try{
+            open();
+            String query = "select * from board_popularity where bno = ? and userId = ?";
+
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, bno);
+            pstmt.setString(2, userId);
+            ResultSet rs = pstmt.executeQuery();
+            BoardPopularity boardPopularity = null;
+
+            if(rs.next()){
+                boardPopularity = new BoardPopularity();
+                boardPopularity.setBno(rs.getInt("bno"));
+                boardPopularity.setUserId(rs.getString("userId"));
+                boardPopularity.setType(rs.getString("type"));
+            }
+            return boardPopularity;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close();
+        }
+    }
+    public boolean boardPopularity(String bno, String userId){
+        try {
+            open();
+            String query = "insert into board_popularity(bno, userId, type) values(?, ?, now())";
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setString(1, bno);
+            pstmt.setString(2, userId);
+
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public boolean insert(Board board){
         try {
+            open();
             String query = "insert into boards" +
                     "(btitle, bwriter, bcontent, bhit, type, isDelete, bwriterId, password) " +
                     "values (?, ?, ?, ?, ?, 0, ?, ?)";
@@ -191,6 +249,7 @@ public class BoardDAO {
                 "set btitle = ?, bcontent = ?, bwriter = ? " +
                 "where bno = ?";
         try {
+            open();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, board.getBtitle());
             pstmt.setString(2, board.getBcontent());

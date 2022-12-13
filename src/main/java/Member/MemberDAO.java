@@ -1,39 +1,44 @@
-package Auth;
+package Member;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemberDAO {
-    final Connection con;
-    PreparedStatement pstmt;
+public class MemberDAO implements MemberRepository{
+    private Connection con;
+    private PreparedStatement pstmt;
+    private static DataSource dataFactory;
 
-    public MemberDAO() throws NamingException {
-        Context ctx = new InitialContext();
-        Context envContext = (Context) ctx.lookup("java:/comp/env");
-        DataSource dataFactory = (DataSource) envContext.lookup("jdbc/maria");
+    public static void setDataFactory(DataSource dataFactory) {
+        MemberDAO.dataFactory = dataFactory;
+    }
+
+    private void open() {
         try {
             con = dataFactory.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     private void close() {
         try {
             if (pstmt != null) {
                 pstmt.close();
+            }
+            if(con != null){
+                // con.commit();
+                con.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public Member viewMember(String id){
+    public Member findById(String id){
+        open();
         String query = "select * from member where userid = ?";
 
         try {
@@ -67,11 +72,12 @@ public class MemberDAO {
             close();
         }
     }
-    public synchronized void insertMember(Member member) throws Member.ExistMember {
+    public synchronized boolean insertMember(Member member) {
         try{
+            open();
             pstmt = con.prepareStatement("insert into member" +
-                    "(userid, pwd, name, phone, email, createdate) " +
-                    "values(?, ?, ?, ?, ?, ?)");
+                    "(userid, pwd, name, phone, email, createdate, isAdmin, userStatus) " +
+                    "values(?, ?, ?, ?, ?, ?, ?, ?)");
 
             //멤버 정보 설정
             pstmt.setString(1, member.getUserId());
@@ -80,16 +86,23 @@ public class MemberDAO {
             pstmt.setString(4, member.getPhone());
             pstmt.setString(5, member.getEmail());
             pstmt.setString(6, String.valueOf(LocalDateTime.now()));
-            pstmt.executeUpdate();
+            pstmt.setBoolean(7, member.isAdmin());
+            pstmt.setString(8, member.getUserStatus());
+            return pstmt.executeUpdate() > 0;
+
         }catch (SQLException e){
             e.printStackTrace();
         }finally {
             close();
         }
+
+        return false;
     }
+
     public boolean edit(Member member){
+        open();
         String query = "update member " +
-                "set pwd = ?, name = ?, email = ?, phone = ? " +
+                "set pwd = ?, name = ?, email = ?, phone = ?, createdate = ?, logindatetime = ?, delete_yn = ?, userStatus = ? " +
                 "where userId=?";
         try {
             System.out.println("edit member:"+member);
@@ -98,7 +111,11 @@ public class MemberDAO {
             pstmt.setString(2, member.getName());
             pstmt.setString(3, member.getEmail());
             pstmt.setString(4, member.getPhone());
-            pstmt.setString(5, member.getUserId());
+            pstmt.setTimestamp(5, Timestamp.valueOf(member.getCreatedate()));
+            pstmt.setTimestamp(6, Timestamp.valueOf(member.getLoginDateTime()));
+            pstmt.setBoolean(7, member.isAdmin());
+            pstmt.setString(8, member.getUserStatus());
+            pstmt.setString(9, member.getUserId());
 
             int result = pstmt.executeUpdate();
             return result > 0;
@@ -110,6 +127,7 @@ public class MemberDAO {
     }
     public List<Member> list(String search){
         try {
+            open();
             String query = "select * from member where name like ?";
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, "%"+search+"%");
@@ -144,6 +162,7 @@ public class MemberDAO {
         }
     }
     public Member searchId(Member member){
+        open();
         String query = "select * from member where name = ? and email = ?";
         try {
             pstmt = con.prepareStatement(query);
@@ -167,6 +186,7 @@ public class MemberDAO {
     public Member searchPwd(Member member){
         String query = "select * from member where userid = ? and phone = ?";
         try {
+            open();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, member.getUserId());
             pstmt.setString(2, member.getPhone());
@@ -187,7 +207,7 @@ public class MemberDAO {
 
     public boolean userStatus_noUse(String id){
         try {
-
+            open();
             String query = "update member " +
                     "set userStatus = ?" +
                     "where userid = ?";
@@ -205,7 +225,7 @@ public class MemberDAO {
 
     public boolean userStatus_use(String id) {
         try {
-
+            open();
             String query = "update member " +
                     "set userStatus = ?" +
                     "where userid = ?";
@@ -223,9 +243,10 @@ public class MemberDAO {
 
     public boolean userStatus_withdraw(String id){
         try {
+            open();
             String query = "update member " +
-                    "set userStatus = ?" +
-                    "where userid = ?";
+                    "set userStatus = ? " +
+                    "where userid = ? ";
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, "STOP");
             pstmt.setString(2, id);
