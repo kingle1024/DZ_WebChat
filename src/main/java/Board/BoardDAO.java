@@ -69,7 +69,7 @@ public class BoardDAO implements BoardRepository{
                     "from boards " +
                     "where isDelete = 0 " +
                     "and type = ? " +
-                    "and btitle like ? " +
+                    "and btitle like ? order by bno desc " +
                     "limit "+ boardParam.getPageStart()+", " + boardParam.getPageEnd();
 
             pstmt = con.prepareStatement(query);
@@ -218,7 +218,7 @@ public class BoardDAO implements BoardRepository{
         }
     }
 
-    public boolean insert(Board board){
+    public int insert(Board board){
         try {
             open();
             String query = "insert into boards" +
@@ -233,10 +233,19 @@ public class BoardDAO implements BoardRepository{
             pstmt.setString(5, board.getType());
             pstmt.setString(6, board.getBwriterId());
             pstmt.setString(7, board.getPassword());
-//            pstmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
 
-            int result = pstmt.executeUpdate();
-            return result > 0;
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            query = "SELECT LAST_INSERT_ID()";
+            pstmt = con.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            int number = -1;
+            if(rs.next()){
+                number = rs.getInt(1);
+            }
+
+            return number;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
