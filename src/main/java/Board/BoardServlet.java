@@ -2,11 +2,16 @@ package Board;
 
 import BoardPopularity.BoardPopularity;
 import BoardPopularity.BoardPopularityDAO;
+import BoardPopularity.BoardPopularityRepository;
+import File.BoardFile;
+import File.BoardFileDAO;
 import Page.BoardParam;
 import Page.PageUtil;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.json.JSONObject;
 
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,17 +19,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 @WebServlet(name = "BoardServlet", value = "/board/*")
 public class BoardServlet extends HttpServlet {
-    BoardDAO boardDAO;
-    BoardPopularityDAO boardPopularityDAO;
+    BoardRepository boardDAO;
+    BoardFileDAO boardFileDAO;
+    BoardPopularityRepository boardPopularityDAO;
     PrintWriter out;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -33,12 +37,10 @@ public class BoardServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
 
-        try {
-            boardDAO = new BoardDAO();
-            out = response.getWriter();
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
-        }
+        boardDAO = new BoardDAO();
+        boardPopularityDAO = new BoardPopularityDAO();
+        boardFileDAO = new BoardFileDAO();
+        out = response.getWriter();
 
         switch (requestURI) {
             case "/board/notice/edit": {
@@ -55,7 +57,6 @@ public class BoardServlet extends HttpServlet {
 
                 break;
             }
-
 
             case "/board/normal/list":{
                 String search = request.getParameter("search");
@@ -112,7 +113,6 @@ public class BoardServlet extends HttpServlet {
                 parameter.setSearch(search);
                 parameter.setType(type);
                 parameter.init();
-                System.out.println("parameter:"+parameter.getPageIndex() +" "+parameter.getPageSize());
 
                 List<Board> boardsList = boardDAO.list(search, type, parameter);
                 long totalCount = boardDAO.listSize(search, type);
@@ -148,7 +148,30 @@ public class BoardServlet extends HttpServlet {
                 String no = request.getParameter("no");
                 boardDAO.addHit(no);
                 Board board = boardDAO.viewBoard(no);
+                List<BoardFile> boardFiles = boardFileDAO.list(no);
+
+                long likeCount = boardPopularityDAO.findByBnoAndType(board.getBno(), "like");
+                long disLikeCount = boardPopularityDAO.findByBnoAndType(board.getBno(), "dislike");
+                String userId = (String) session.getAttribute("login_id");
+
+                BoardPopularity boardPopularity = boardPopularityDAO.findByBnoAndUserIdAndIsDelete(no, userId);
+
+                if(boardPopularity == null){
+                    request.setAttribute("myStatus", "no");
+                }else {
+                    String likeType = boardPopularity.getType();
+                    if ("like".equals(likeType)) {
+                        request.setAttribute("myStatus", "like");
+                    } else if ("dislike".equals(likeType)) {
+                        request.setAttribute("myStatus", "dislike");
+                    }
+                }
+
+                request.setAttribute("boardFiles", boardFiles);
                 request.setAttribute("board", board);
+                request.setAttribute("like", likeCount);
+                request.setAttribute("dislike", disLikeCount);
+
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/jsp/notice/view.jsp");
                 dispatcher.forward(request, response);
 
@@ -170,6 +193,7 @@ public class BoardServlet extends HttpServlet {
                     jsonResult.put("status", true);
                 }
                 out.println(jsonResult);
+                break;
             }
 
             default:
@@ -188,7 +212,7 @@ public class BoardServlet extends HttpServlet {
             boardDAO = new BoardDAO();
             boardPopularityDAO = new BoardPopularityDAO();
             out = response.getWriter();
-        } catch (NamingException | IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -206,25 +230,34 @@ public class BoardServlet extends HttpServlet {
 
                     BoardPopularity boardPopularity = boardPopularityDAO.findByBnoAndUserIdAndIsDelete(bno, loginId);
                     JSONObject jsonResult = new JSONObject();
-                    if (boardPopularity == null) { // 기존에 데이터가 없는 경우
+                    if (boardPopularity == null) { // 기존에 데이터가 없는 경우 추가
                         boardPopularity = new BoardPopularity();
                         boardPopularity.setBno(Integer.parseInt(bno));
                         boardPopularity.setUserId(loginId);
                         boardPopularity.setType(type);
                         boardPopularityDAO.insert(boardPopularity);
                         jsonResult.put("message", "성공");
-                        jsonResult.put("status", true);
+                        jsonResult.put("status", "add");
                     } else {
                         // 동일한 데이터가 존재하면 제거
                         if (boardPopularity.getType().equals(type)) {
+                            System.out.println("취소");
                             // del
+                            boardPopularity.setDelete(true);
+
+                            boardPopularityDAO.update(boardPopularity);
                             jsonResult.put("message", "취소되었습니다.");
-                            jsonResult.put("status", false);
+                            jsonResult.put("status", "cancel");
                         } else {
-                            // insert
+                            // 변경
+                            System.out.println("변경");
+                            boardPopularity.setDelete(true);
+                            boardPopularityDAO.update(boardPopularity);
                             boardPopularity.setType(type);
-                            jsonResult.put("message", "처리되었습니다.");
-                            jsonResult.put("status", true);
+                            boardPopularity.setDelete(false);
+                            boardPopularityDAO.insert(boardPopularity);
+                            jsonResult.put("message", "변경되었습니다.");
+                            jsonResult.put("status", "change");
                         }
                     }
                     out.println(jsonResult);
@@ -249,14 +282,14 @@ public class BoardServlet extends HttpServlet {
                             .password(password)
                             .type(type)
                             .build();
-                    boolean result = boardDAO.insert(board);
+                    int result = boardDAO.insert(board);
 
                     JSONObject jsonResult = new JSONObject();
 
                     if(!password.equals(rePassword)){
                         jsonResult.put("status", false);
                         jsonResult.put("message", "비밀번호가 서로 다릅니다.");
-                    }else if (!result) {
+                    }else if (result < 0) {
                         jsonResult.put("status", false);
                         jsonResult.put("message", "등록 실패");
                     }else {
@@ -264,25 +297,66 @@ public class BoardServlet extends HttpServlet {
                         jsonResult.put("url", "/board/normal/list?type="+type);
                         jsonResult.put("message", "등록 성공");
                     }
+
                     System.out.println(jsonResult);
                     out.println(jsonResult);
-                    break;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-
+                break;
             }
             case "/board/insert":{
                 try {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
-                    String jsonStr = in.readLine();
-                    JSONObject jsonObject = new JSONObject(jsonStr);
+                    DiskFileItemFactory factory = new DiskFileItemFactory();
+                    // 업로드 파일 임시로 저장할 경로 설정 -> /temp
+                    String tempRepository = "/Users/ejy1024/Documents/upload/temp";
+                    factory.setRepository(new File((tempRepository))); // 임시공간
+                    ServletFileUpload upload = new ServletFileUpload(factory);
+                    List<FileItem> items = upload.parseRequest(request);
 
-                    String title = (String) jsonObject.get("title");
+                    String title = "";
+                    String content = "";
+                    String type = "";
+                    List<BoardFile> boardFiles = new ArrayList<>();
+
+                    for(FileItem item : items){
+                        if(item.isFormField()){
+                            String value = new String(item.getString().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+
+                            switch (item.getFieldName()){
+                                case "title":{
+                                    title = value;
+                                    break;
+                                }
+                                case "editor":{
+                                    content = value;
+                                    break;
+                                }
+                                case "type":{
+                                    type = value;
+                                    break;
+                                }
+                            }
+                        }else{
+                            BoardFile boardFile = new BoardFile();
+
+                            boardFile.setOrgName(item.getName());
+                            String[] contentType = item.getContentType().split("/");
+                            String realName = System.currentTimeMillis() + "." + contentType[1];
+                            boardFile.setRealName(realName);
+                            boardFile.setContentType(item.getContentType());
+                            boardFile.setLength((int) item.getSize());
+                            boardFiles.add(boardFile);
+
+                            File saveFile = new File(tempRepository +"/"+realName);
+                            // 실제 저장 경로
+                            item.write(saveFile);
+                        }
+                    }
+
                     String writer = (String) session.getAttribute("login_name");
                     String writerId = (String) session.getAttribute("login_id");
-                    String content = (String) jsonObject.get("content");
-                    String type = (String) jsonObject.get("type");
+
 
                     // TODO 등록한 계정이 관리자가 아닐 때에 바로 리턴 처리
 //                    int isAdmin = () session.getAttribute("login_admin");
@@ -297,11 +371,15 @@ public class BoardServlet extends HttpServlet {
                             .bwriterId(writerId)
                             .password("")
                             .build();
-                    boolean result = boardDAO.insert(board);
+                    int result = boardDAO.insert(board);
                     JSONObject jsonResult = new JSONObject();
 
+                    for(BoardFile bf : boardFiles){
+                        bf.setNumber(result);
+                        boardFileDAO.insert(bf);
+                    }
 
-                    if (!result) {
+                    if (result < 0) {
                         jsonResult.put("status", false);
                         jsonResult.put("message", "등록 실패");
                     }else {
@@ -311,10 +389,10 @@ public class BoardServlet extends HttpServlet {
                     }
                     System.out.println(jsonResult);
                     out.println(jsonResult);
-                    break;
-                } catch (IOException e) {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+                break;
             }
             case "/board/normal/edit":{
                 try {
@@ -353,10 +431,10 @@ public class BoardServlet extends HttpServlet {
                         jsonResult.put("url", "/board/normal/view?no="+bno);
                     }
                     out.println(jsonResult);
-                    break;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                break;
             }
             case "/board/notice/edit":{
                 try {
@@ -387,10 +465,10 @@ public class BoardServlet extends HttpServlet {
                         jsonResult.put("url", "/board/notice/view?no="+bno);
                     }
                     out.println(jsonResult);
-                    break;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                break;
             }
             case "/board/normal/del": {
                 try {
@@ -464,10 +542,8 @@ public class BoardServlet extends HttpServlet {
                     throw new RuntimeException(e);
                 }
                 break;
-
             }
             default : {
-
             }
         }
     }
