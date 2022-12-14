@@ -2,6 +2,7 @@ package Listener;
 
 import Board.BoardDAO;
 import BoardPopularity.BoardPopularityDAO;
+import File.BoardFileDAO;
 import Member.MemberDAO;
 
 import javax.naming.Context;
@@ -23,6 +24,7 @@ public class Listener implements ServletContextListener {
             DataSource dataFactory = (DataSource) envContext.lookup("jdbc/maria");
             MemberDAO.setDataFactory(dataFactory);
             BoardDAO.setDataFactory(dataFactory);
+            BoardFileDAO.setDataFactory(dataFactory);
             BoardPopularityDAO.setDataFactory(dataFactory);
         } catch (NamingException e) {
             throw new RuntimeException(e);
