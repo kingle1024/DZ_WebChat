@@ -13,7 +13,7 @@
 </head>
 <body>
 <c:if test="${board.bwriterId eq login_id}">
-    <a href="/board/notice/edit?bno=${board.bno}">수정</a><br/>
+    <a href="/board/edit?bno=${board.bno}">수정</a><br/>
 </c:if>
 
 ${board.bno} <br/>

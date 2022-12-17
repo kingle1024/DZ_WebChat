@@ -21,42 +21,12 @@ view.jsp 페이지 <br/>
     user email : <input type="text" name="email" id="email" value="${member.email}"> <br/>
     user phone : <input type="text" name="phone" id="phone" value="${member.phone}"> <br/>
     user registerDate <span>${member.createdate}</span><br/>
-    user loginDate : <span>${member.loginDateTime} </span><br/>
 </form>
 <br/><a href="#" id="withdraw">탈퇴</a>
 
+<a href="${pageContext.request.contextPath}/login">메인</a>
 <a href="logout">로그아웃</a><br/><br/>
-<a href="${pageContext.request.contextPath}/">main</a>
 <script>
-    <%--let form = document.querySelector("#editForm");--%>
-    <%--form.addEventListener('submit', (event) => {--%>
-    <%--    event.preventDefault();--%>
-    <%--    console.log(this.name.value);--%>
-    <%--    let param = {--%>
-    <%--        "name" : this.name.value,--%>
-    <%--        "email" : this.email.value,--%>
-    <%--        "phone" : this.phone.value--%>
-    <%--    }--%>
-    <%--    console.log(param.name);--%>
-
-    <%--    fetch('${pageContext.request.contextPath}/member/edit', {--%>
-    <%--        method : 'POST',--%>
-    <%--        headers : {--%>
-    <%--            'Content-Type' : 'application/json;charset=utf-8'--%>
-    <%--        },--%>
-    <%--        body : JSON.stringify(param)--%>
-    <%--    })--%>
-    <%--        .then(response => response.json())--%>
-    <%--        .then(jsonResult => {--%>
-    <%--            alert(jsonResult);--%>
-    <%--            if(jsonResult.status === false){--%>
-    <%--                alert(jsonResult.message);--%>
-    <%--            }else{--%>
-    <%--                // location.href = jsonResult.url;--%>
-    <%--            }--%>
-    <%--        });--%>
-    <%--});--%>
-
     let editButton = document.querySelector("#editSubmit");
 
     editButton.onclick = (event) => {
@@ -64,7 +34,7 @@ view.jsp 페이지 <br/>
         edit(event);
     };
 
-    function edit(event){
+    function edit(){
         let param = {
             "name" : document.getElementById("name").value,
             "email" : document.getElementById("email").value,

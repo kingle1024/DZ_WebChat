@@ -10,19 +10,51 @@
 <html>
 <head>
     <title>글 상세</title>
+    <script>
+        window.onload = function (){
+            const myState = '${myStatus}';
+            if(myState == 'like'){
+                document.querySelector("#like").style.backgroundColor = '#008CBA';
+            }else if(myState == 'dislike') {
+                document.querySelector("#dislike").style.backgroundColor = '#f44336';
+            }
+        }
+    </script>
+    <style>
+        table{
+
+        }
+    </style>
 </head>
 <body>
 <c:if test="${board.bwriterId eq login_id}">
-    <a href="${pageContext.request.contextPath}/board/notice/edit?bno=${board.bno}">수정</a><br/>
+    <a href="${pageContext.request.contextPath}/board/edit?bno=${board.bno}">수정</a><br/>
     <button id="del">삭제</button><br/>
 </c:if>
+<table>
+    <tr>
+        <td>글 번호</td><td>${board.bno}</td>
+    </tr>
+    <tr>
+        <td>제목</td><td>${board.btitle}</td>
+    </tr>
+    <tr>
+        <td>작성일</td><td>${board.bdate}</td>
+    </tr>
+    <tr>
+        <td>내용</td><td>${board.bcontent}</td>
+    </tr>
+</table>
+<table>
+<c:forEach var="file" items="${boardFiles}" >
+    <tr>
+        <td><a href="/boardFile/download?filename=${file.realName}">${file.orgName}</a></td>
+    </tr>
+</c:forEach>
+</table>
 
-${board.bno} <br/>
-${board.btitle} <br/>
-${board.bcontent} <br/>
-${board.bdate}
-<button id="like">좋아유 <span id="likeCount">0</span></button>
-<button id="dislike">싫어유 <span id="dislikeCount">0</span></button>
+<button id="like">좋아유 <span id="likeCount">${like}</span></button>
+<button id="dislike">싫어유 <span id="dislikeCount">${dislike}</span></button>
 <script>
     let delButton = document.querySelector("#del");
     let bno = ${board.bno};
@@ -48,6 +80,7 @@ ${board.bdate}
             "type" : btype
         }
         boardPopularity(params, btype);
+        likeButton.style.backgroundColor = '#008CBA'; // blue
     }
 
     let dislikeButton = document.querySelector("#dislike");
@@ -58,6 +91,7 @@ ${board.bdate}
             "type" : btype
         }
         boardPopularity(params, btype);
+        dislikeButton.style.backgroundColor = '#f44336'; // red
     }
 
     function boardPopularity(params, btype){
@@ -72,12 +106,46 @@ ${board.bdate}
             .then(jsonResult => {
                 alert(jsonResult.message);
                 let count;
-                if(btype == "like"){
-                    count = document.getElementById("likeCount");
-                }else{
-                    count = document.getElementById("dislikeCount");
+
+                if(jsonResult.status == "add"){
+                    if(btype == "like"){
+                        count = document.getElementById("likeCount");
+                        count.textContent = parseInt(count.textContent) +1;
+                    }else{
+                        count = document.getElementById("dislikeCount");
+                        count.textContent = parseInt(count.textContent) +1;
+                    }
+                } else if(jsonResult.status == "cancel"){
+                    if(btype == "like"){
+                        count = document.getElementById("likeCount");
+                        count.textContent = parseInt(count.textContent) -1;
+                        count.style.backgroundColor = "";
+                        document.getElementById("like").style.backgroundColor='';
+                    }else{
+                        count = document.getElementById("dislikeCount");
+                        count.textContent = parseInt(count.textContent) -1;
+                        count.style.backgroundColor = "";
+                        document.getElementById("dislike").style.backgroundColor='';
+                    }
+                } else if(jsonResult.status == "change"){
+                    if(btype == "like"){
+                        let likeCnt = document.getElementById("likeCount");
+                        let dislikeCnt = document.getElementById("dislikeCount");
+
+                        likeCnt.textContent = (parseInt(likeCnt.textContent) +1);
+                        dislikeCnt.textContent = (parseInt(dislikeCnt.textContent) -1);
+                        document.getElementById("dislike").style.backgroundColor='';
+                    }else{
+                        let likeCnt = document.getElementById("likeCount");
+                        let dislikeCnt = document.getElementById("dislikeCount");
+
+                        likeCnt.textContent = (parseInt(likeCnt.textContent) -1);
+                        dislikeCnt.textContent = (parseInt(dislikeCnt.textContent) +1);
+                        document.getElementById("like").style.backgroundColor='';
+                    }
                 }
-                count.textContent = parseInt(count.textContent) +1;
+
+
             });
     }
 

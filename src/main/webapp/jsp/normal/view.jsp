@@ -14,7 +14,7 @@
 <body>
 
 <%--<a href="${pageContext.request.contextPath}/board/notice/edit?bno=${board.bno}">수정</a><br/>--%>
-<form method="post" action="/board/normal/editPage" id="editForm">
+<form method="post" action="/board/normal/editpage" id="editForm">
     <input type="hidden" id="password" name="password">
     <input type="hidden" id="bno" name="bno" value="${board.bno}">
 </form>
