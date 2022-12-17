@@ -1,6 +1,9 @@
 package Auth;
 
-import javax.naming.NamingException;
+import Member.Member;
+import Member.MemberDAO;
+import Member.MemberRepository;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-
+import java.time.LocalDateTime;
 
 @WebServlet(name = "login", value = "/login")
 public class LoginServlet extends HttpServlet {
@@ -25,23 +28,29 @@ public class LoginServlet extends HttpServlet {
 
     private void doHandle(HttpServletRequest request, HttpServletResponse response){
         try {
+            HttpSession session = request.getSession();
             String user_id = request.getParameter("user_id");
+            if(user_id == null){
+                user_id = (String) session.getAttribute("login_id");
+            }
 
-            MemberDAO dao = new MemberDAO();
-            Member m = dao.viewMember(user_id);
+            MemberRepository dao = new MemberDAO();
+            Member member = dao.findById(user_id);
 
             RequestDispatcher dispatch;
-            validMember(request, response, m);
+            validMember(request, response, member);
 
-            HttpSession session = request.getSession();
+            member.setLoginDateTime(LocalDateTime.now());
+            dao.edit(member);
+
             session.setAttribute("isLogon", true);
             session.setAttribute("login_id", user_id);
-            session.setAttribute("login_name", m.getName());
-            session.setAttribute("login_admin", m.isAdmin());
+            session.setAttribute("login_name", member.getName());
+            session.setAttribute("login_admin", member.isAdmin());
 
             dispatch = request.getRequestDispatcher("/jsp/index.jsp");
             dispatch.forward(request, response);
-        } catch (NamingException | IOException | ServletException e) {
+        } catch (IOException | ServletException e) {
             throw new RuntimeException(e);
         }
     }
