@@ -48,7 +48,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("login_name", member.getName());
             session.setAttribute("login_admin", member.isAdmin());
 
-            dispatch = request.getRequestDispatcher("/jsp/index.jsp");
+            dispatch = request.getRequestDispatcher("/WEB-INF/jsp/index.jsp");
             dispatch.forward(request, response);
         } catch (IOException | ServletException e) {
             throw new RuntimeException(e);
@@ -59,11 +59,11 @@ public class LoginServlet extends HttpServlet {
         RequestDispatcher dispatch;
         if(m == null){
             request.setAttribute("errorMsg", "아이디 및 비밀번호를 확인하세요.");
-            dispatch = request.getRequestDispatcher("/jsp/login.jsp");
+            dispatch = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
             dispatch.forward(request, response);
         }else if(m.getUserStatus().equals("STOP")){
             request.setAttribute("errorMsg", "정지된 회원입니다.");
-            dispatch = request.getRequestDispatcher("/jsp/login.jsp");
+            dispatch = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
             dispatch.forward(request, response);
         }
     }

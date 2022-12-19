@@ -1,20 +1,20 @@
 package Filter;
 
-import java.util.HashSet;
 import javax.servlet.*;
-import javax.servlet.annotation.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
-
 @WebFilter(
         urlPatterns = "/*",
         initParams = {
-                @WebInitParam(name="no.auth.urls", value="/jsp/login.jsp"),
+                @WebInitParam(name="no.auth.urls", value="/WEB-INF/jsp/login.jsp"),
                 @WebInitParam(name="no.auth.urls", value="/login"),
-                @WebInitParam(name="login.url", value="/jsp/login.jsp"),
+                @WebInitParam(name="login.url", value="/"),
                 @WebInitParam(name="encoding", value="utf-8")
         }
 )
@@ -29,13 +29,12 @@ public class EncoderFilter implements Filter {
         context = fConfig.getServletContext();
         String context = fConfig.getServletContext().getContextPath();
         loginUrl = context + fConfig.getInitParameter("login.url");
-
+        authUrls.add("/");
         authUrls.add("/login");
         authUrls.add("/member/dupUidCheck");
         authUrls.add("/member/insert");
-        authUrls.add("/jsp/login.jsp");
-        authUrls.add("/jsp/register.jsp");
-        authUrls.add("/jsp/register.html");
+        authUrls.add("/member/searchId");
+        authUrls.add("/member/searchPwd");
     }
 
     public void destroy() {
@@ -70,8 +69,8 @@ public class EncoderFilter implements Filter {
         Object value = session.getAttribute("isLogon");
 
         boolean isLogin = value != null ? (Boolean) value : false;
-//        authUrls = (Set<String>) context.getAttribute("authUrls");
 
-        return (isLogin || authUrls.contains(pathInfo));
+        return (isLogin || pathInfo.contains("/board/normal") ||
+                pathInfo.contains("/jsp/") || authUrls.contains(pathInfo));
     }
 }
