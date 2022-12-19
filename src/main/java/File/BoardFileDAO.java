@@ -71,12 +71,13 @@ public class BoardFileDAO {
             ResultSet rs = pstmt.executeQuery();
             List<BoardFile> boardFiles = new ArrayList<>();
             while(rs.next()){
-                BoardFile boardFile = new BoardFile();
-                boardFile.setNumber(rs.getInt("number"));
-                boardFile.setOrgName(rs.getString("org_name"));
-                boardFile.setRealName(rs.getString("real_name"));
-                boardFile.setContentType(rs.getString("content_type"));
-                boardFile.setLength(rs.getInt("length"));
+                BoardFile boardFile = BoardFile.builder()
+                        .number(rs.getInt("number"))
+                        .orgName(rs.getString("org_name"))
+                        .realName(rs.getString("real_name"))
+                        .ContentType(rs.getString("content_type"))
+                        .length(rs.getInt("length"))
+                        .build();
                 boardFiles.add(boardFile);
             }
 
