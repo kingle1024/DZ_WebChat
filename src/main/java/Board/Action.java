@@ -19,6 +19,19 @@ public class Action {
     BoardFileDAO boardFileDAO = new BoardFileDAO();
     BoardPopularityDAO boardPopularityDAO = new BoardPopularityDAO();
 
+    @RQ(url = "/qna/add")
+    public String qnaAdd(HttpServletRequest request, HttpServletResponse response){
+        return "/jsp/qna/add.jsp";
+    }
+    @RQ(url = "/notice/add")
+    public String noticeAdd(HttpServletRequest request, HttpServletResponse response){
+        return "/jsp/notice/add.jsp";
+    }
+    @RQ(url = "/normal/add")
+    public String normalAdd(HttpServletRequest request, HttpServletResponse response){
+        return "/jsp/normal/add.jsp";
+    }
+
     @RQ(url = "/edit")
     public String edit(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
@@ -111,7 +124,7 @@ public class Action {
         request.setAttribute("totalCount", totalCount);
         request.setAttribute("pager", pageUtil.paper());
 
-        return "/jsp/notice/list.jsp";
+        return "/jsp/"+type+"/list.jsp";
     }
 
     @RQ(url = "/normal/view")
@@ -153,7 +166,7 @@ public class Action {
         request.setAttribute("like", likeCount);
         request.setAttribute("dislike", disLikeCount);
 
-        return "/jsp/notice/view.jsp";
+        return "/jsp/"+board.getType()+"/view.jsp";
     }
     @RQ(url = "/del")
     public JSONObject del(HttpServletRequest request, HttpServletResponse response){
@@ -171,15 +184,16 @@ public class Action {
         }else{
             jsonResult.put("message", "삭제 성공");
             jsonResult.put("status", true);
+            jsonResult.put("url", "/board/list?type=notice");
         }
         return jsonResult;
     }
     @RQ(url = "/replyForm")
     public String replyForm(HttpServletRequest request, HttpServletResponse response){
-        // 원본글 나오고
+        String bno = request.getParameter("bno");
+        Board board = boardDAO.viewBoard(bno);
+        request.setAttribute("board", board);
 
-        // 제목, 내용 등 입력
-        String number = request.getParameter("bno");
-        return "";
+        return "/jsp/qna/replyForm.jsp";
     }
 }
