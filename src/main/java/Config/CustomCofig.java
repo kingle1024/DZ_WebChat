@@ -1,5 +1,6 @@
 package Config;
 
+import Custom.RQ;
 import org.json.JSONObject;
 
 import javax.servlet.RequestDispatcher;
@@ -25,7 +26,7 @@ public class CustomCofig {
                 Object ret = method.invoke(obj, request, response);
                 // String class가 맞으면
                 if (ret.getClass().equals(String.class)){
-                    RequestDispatcher dispatcher = request.getRequestDispatcher((String) ret);
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF"+ ret);
                     dispatcher.forward(request, response);
                 } else if(ret.getClass().equals(JSONObject.class)){
                     JSONObject jsonResult = (JSONObject) ret;
@@ -59,13 +60,20 @@ public class CustomCofig {
             Method[] methods = cls.getDeclaredMethods();
             for(Method method : methods){
                 String methodName = method.getName();
-                ArrayList<String> actionInfo = splitMethodNames(methodName);
-                StringBuilder sb = new StringBuilder();
-                sb.append("/").append(packageNameLower);
-                for(String action : actionInfo){
-                    sb.append("/").append(action);
+                String action = "/";
+                if(method.isAnnotationPresent(RQ.class)){
+                    RQ rq = method.getAnnotation(RQ.class);
+                    action += packageNameLower;
+                    action += rq.url();
+                }else {
+                    ArrayList<String> actionInfo = splitMethodNames(methodName);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("/").append(packageNameLower);
+                    for (String ac : actionInfo) {
+                        sb.append("/").append(ac);
+                    }
+                    action = sb.toString();
                 }
-                String action = sb.toString();
 
                 methodMap.put(action, method);
                 if(!className2ObjectMap.containsKey(filePath)){

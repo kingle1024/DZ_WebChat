@@ -2,6 +2,7 @@ package Board;
 
 import BoardPopularity.BoardPopularity;
 import BoardPopularity.BoardPopularityDAO;
+import Custom.RQ;
 import File.BoardFile;
 import File.BoardFileDAO;
 import Page.BoardParam;
@@ -18,7 +19,7 @@ public class Action {
     BoardFileDAO boardFileDAO = new BoardFileDAO();
     BoardPopularityDAO boardPopularityDAO = new BoardPopularityDAO();
 
-
+    @RQ(url = "/edit")
     public String edit(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
 
@@ -38,6 +39,7 @@ public class Action {
         return "/jsp/notice/edit.jsp";
     }
 
+    @RQ(url = "/normal/list")
     public String normalList(HttpServletRequest request, HttpServletResponse response){
         String search = request.getParameter("search");
         if(search == null) search = "";
@@ -75,6 +77,7 @@ public class Action {
         return "/jsp/normal/list.jsp";
     }
 
+    @RQ(url = "/list")
     public String list(HttpServletRequest request, HttpServletResponse response){
         String search = request.getParameter("search");
         if(search == null) search = "";
@@ -111,6 +114,7 @@ public class Action {
         return "/jsp/notice/list.jsp";
     }
 
+    @RQ(url = "/normal/view")
     public String normalView(HttpServletRequest request, HttpServletResponse response){
         String no = request.getParameter("no");
         boardDAO.addHit(no);
@@ -119,6 +123,7 @@ public class Action {
         return "/jsp/normal/view.jsp";
     }
 
+    @RQ(url = "/notice/view")
     public String noticeView(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         String no = request.getParameter("no");
@@ -150,6 +155,7 @@ public class Action {
 
         return "/jsp/notice/view.jsp";
     }
+    @RQ(url = "/del")
     public JSONObject del(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         String bno = request.getParameter("bno");
@@ -167,5 +173,13 @@ public class Action {
             jsonResult.put("status", true);
         }
         return jsonResult;
+    }
+    @RQ(url = "/replyForm")
+    public String replyForm(HttpServletRequest request, HttpServletResponse response){
+        // 원본글 나오고
+
+        // 제목, 내용 등 입력
+        String number = request.getParameter("bno");
+        return "";
     }
 }

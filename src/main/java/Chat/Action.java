@@ -1,10 +1,13 @@
 package Chat;
 
+import Custom.RQ;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class Action {
+    @RQ(url = "/add")
     public String add(HttpServletRequest request, HttpServletResponse response){
         try {
             System.out.println("/chat/add");
@@ -19,6 +22,7 @@ public class Action {
         }
         return null;
     }
+    @RQ(url = "/list")
     public String list(HttpServletRequest request, HttpServletResponse response){
         try {
             System.out.println("/chat/list");
