@@ -31,9 +31,7 @@
     <a href="${pageContext.request.contextPath}/board/edit?bno=${board.bno}">수정</a><br/>
     <button id="del">삭제</button><br/>
 </c:if>
-<c:if test="${board.bno == board.parentNo}">
-    <a href="${pageContext.request.contextPath}/board/replyForm?bno=${board.bno}">답글</a>
-</c:if>
+
 <table>
     <tr>
         <td>글 번호</td><td>${board.bno}</td>
@@ -68,9 +66,7 @@
                 .then(jsonResult => {
                     alert(jsonResult.message);
                     if (jsonResult.status === true) {
-                        // location.href = jsonResult.url;
-                        // TODO location으로 변경해야 함.
-                        history.back();
+                        location.href = jsonResult.url;
                     }
                 });
         };
