@@ -19,6 +19,10 @@ public class Board {
     private String bwriterId;
     private String type;
     private String password;
+    private String parentNo;
     private int bhit;
+    private int likeCnt;
+    private int disLikeCnt;
+    private boolean isDelete;
     private LocalDateTime bdate;
 }

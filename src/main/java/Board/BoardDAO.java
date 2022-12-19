@@ -62,6 +62,7 @@ public class BoardDAO implements BoardRepository{
             close();
         }
     }
+
     public List<Board> list(String search, String type, BoardParam boardParam){
         try{
             open();
@@ -69,12 +70,12 @@ public class BoardDAO implements BoardRepository{
                     "from boards " +
                     "where isDelete = 0 " +
                     "and type = ? " +
-                    "and btitle like ? order by bno desc " +
+                    "and btitle like concat('%', ?  , '%') order by bno desc " +
                     "limit "+ boardParam.getPageStart()+", " + boardParam.getPageEnd();
 
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, type);
-            pstmt.setString(2, "%"+search+"%");
+            pstmt.setString(2, search);
 
             ResultSet rs = pstmt.executeQuery();
             List<Board> boards = new ArrayList<>();
@@ -86,6 +87,9 @@ public class BoardDAO implements BoardRepository{
                         .bwriter(rs.getString("bwriter"))
                         .bhit(rs.getInt("bhit"))
                         .bdate(rs.getTimestamp("bdate").toLocalDateTime())
+                        .parentNo(rs.getString("parentNo"))
+                        .likeCnt(rs.getInt("like_cnt"))
+                        .disLikeCnt(rs.getInt("dis_like_cnt"))
                         .build();
                 boards.add(b);
             }
@@ -115,6 +119,10 @@ public class BoardDAO implements BoardRepository{
                         .bwriterId(rs.getString("bwriterId"))
                         .bhit(rs.getInt("bhit"))
                         .password(rs.getString("password"))
+                        .likeCnt(rs.getInt("like_cnt"))
+                        .disLikeCnt(rs.getInt("dis_like_cnt"))
+                        .parentNo(rs.getString("parentNo"))
+                        .type(rs.getString("type"))
                         .build();
             }
             return board;
@@ -157,13 +165,14 @@ public class BoardDAO implements BoardRepository{
             close();
         }
     }
-    public boolean del(String bno){
+    public int del(String bno){
         CallableStatement cstmt = null;
         try {
             open();
             cstmt = con.prepareCall("{call DEL_BOARD(?)}");
             cstmt.setString(1, bno);
-            return cstmt.executeUpdate() > 0;
+
+            return cstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
@@ -217,10 +226,34 @@ public class BoardDAO implements BoardRepository{
             throw new RuntimeException(e);
         }
     }
+    public int callInsert(Board board){
+        CallableStatement cstmt = null;
+        try{
+            open();
+            cstmt = con.prepareCall("{call INSERT_BOARD(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            cstmt.setString(1, board.getBtitle());
+            cstmt.setString(2, board.getBwriter());
+            cstmt.setString(3, board.getBcontent());
+            cstmt.setInt(4, board.getBhit());
+            cstmt.setString(5, board.getType());
+            cstmt.setBoolean(6, board.isDelete());
+            cstmt.setString(7, board.getBwriterId());
+            cstmt.setString(8, board.getPassword());
+            cstmt.registerOutParameter(9, Types.INTEGER);
+            cstmt.executeUpdate();
 
+            return cstmt.getInt(9);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            callableClose(cstmt);
+            close();
+        }
+    }
     public int insert(Board board){
         try {
             open();
+            con.setAutoCommit(false);
             String query = "insert into boards" +
                     "(btitle, bwriter, bcontent, bhit, type, isDelete, bwriterId, password) " +
                     "values (?, ?, ?, ?, ?, 0, ?, ?)";
@@ -233,9 +266,7 @@ public class BoardDAO implements BoardRepository{
             pstmt.setString(5, board.getType());
             pstmt.setString(6, board.getBwriterId());
             pstmt.setString(7, board.getPassword());
-
             pstmt.executeUpdate();
-            pstmt.close();
 
             query = "SELECT LAST_INSERT_ID()";
             pstmt = con.prepareStatement(query);
@@ -245,7 +276,47 @@ public class BoardDAO implements BoardRepository{
                 number = rs.getInt(1);
             }
 
+            query = "UPDATE boards " +
+                    "SET parentNo = ? " +
+                    "WHERE bno = ? ";
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, String.valueOf(number));
+            pstmt.setString(2, String.valueOf(number));
+            pstmt.executeUpdate();
+
+            con.commit();
             return number;
+        } catch (SQLException e) {
+            try {con.rollback();} catch (SQLException ex) {throw new RuntimeException(ex);}
+            throw new RuntimeException(e);
+        }finally {
+            try {
+                con.setAutoCommit(true);
+                close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }
+    public int insertReply(Board board){
+        try {
+            open();
+            String query = "insert into boards" +
+                    "(btitle, bwriter, bcontent, bhit, type, isDelete, bwriterId, password, parentNo) " +
+                    "values (?, ?, ?, ?, ?, 0, ?, ?, ?)";
+            pstmt = con.prepareStatement(query);
+
+            pstmt.setString(1, board.getBtitle());
+            pstmt.setString(2, board.getBwriter());
+            pstmt.setString(3, board.getBcontent());
+            pstmt.setInt(4, board.getBhit());
+            pstmt.setString(5, board.getType());
+            pstmt.setString(6, board.getBwriterId());
+            pstmt.setString(7, board.getPassword());
+            pstmt.setString(8, board.getParentNo());
+
+            return pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
@@ -265,8 +336,7 @@ public class BoardDAO implements BoardRepository{
             pstmt.setString(3, board.getBwriter());
             pstmt.setString(4, board.getBno());
 
-            int result = pstmt.executeUpdate();
-            return result > 0 ;
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {
