@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 // handshake 설정하기 위한 클래스를 지정한다.
 @ServerEndpoint(value = "/broadsocket/{roomName}", configurator = WebSocketSessionConfigurator.class)
 public class BroadSocket {
-//    private Map<Session, EndpointConfig> configs = Collections.synchronizedMap(new HashMap<>());
     private static final Map<String, HashSet<String>> roomAndUserSet = new ConcurrentHashMap<>();
     private static final Map<String, Session> userAndSocketSession = new HashMap<>();
     private static final Map<String, Integer> roomAndParticipantsCount = new HashMap<>();
@@ -52,15 +51,16 @@ public class BroadSocket {
     public void handleMessage(String message, Session userSession, @PathParam("roomName") String roomName) {
         System.out.println("onMessage:"+roomName);
         JSONObject json = new JSONObject(message);
-        String msg = (String) json.get("message");
+        
+        String receiveMsg = (String) json.get("message");
         String sender = (String) json.get("sender");
 
         HashSet<String> userList = roomAndUserSet.get(roomName);
-        message = "[상대방] " + sender + " => " + msg;
 
-        if(msg.startsWith("#w")) { // #w 123 q
-            sendWhisper(userSession, msg, sender);
+        if(receiveMsg.startsWith("#w")) { // #w 123 q
+            sendWhisper(userSession, receiveMsg, sender);
         }else{
+            message = "[상대방] " + sender + " => " + receiveMsg;
             sendToClient(message, userSession, userList);
         }
     }
