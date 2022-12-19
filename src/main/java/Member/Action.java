@@ -1,5 +1,6 @@
 package Member;
 
+import Custom.RQ;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +24,8 @@ public class Action {
         }
         return jsonResult;
     }
-
-    public String view(HttpServletRequest request){
+    @RQ(url = "/view")
+    public String view(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         String id = (String) session.getAttribute("login_id");
         Member member = memberDAO.findById(id);
@@ -32,7 +33,8 @@ public class Action {
         return "/jsp/view.jsp";
     }
 
-    public JSONObject dupUidCheck(HttpServletRequest request){
+    @RQ(url = "/dupUidCheck")
+    public JSONObject dupUidCheck(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         String id = (String) session.getAttribute("login_id");
         Member member = memberDAO.findById(id);
@@ -47,7 +49,8 @@ public class Action {
         }
         return jsonResult;
     }
-    public String edit(HttpServletRequest request){
+    @RQ(url = "/edit")
+    public String edit(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         String id = (String) session.getAttribute("login_id");
         Member member = memberDAO.findById(id);

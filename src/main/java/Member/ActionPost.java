@@ -1,5 +1,6 @@
 package Member;
 
+import Custom.RQ;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +51,7 @@ public class ActionPost {
         }
     }
 
+    @RQ(url = "/searchId")
     public JSONObject searchId(HttpServletRequest request, HttpServletResponse response){
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
@@ -80,6 +82,7 @@ public class ActionPost {
         }
     }
 
+    @RQ(url = "/searchPwd")
     public JSONObject searchPwd(HttpServletRequest request, HttpServletResponse response){
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
@@ -139,7 +142,7 @@ public class ActionPost {
             boolean result = memberDAO.insertMember(member);
             if (result) {
                 jsonResult.put("status", true);
-                jsonResult.put("url", "/jsp/login.jsp");
+                jsonResult.put("url", "/");
                 jsonResult.put("message", "회원가입 성공");
             } else {
                 jsonResult.put("status", false);

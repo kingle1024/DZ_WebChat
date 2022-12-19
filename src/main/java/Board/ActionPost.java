@@ -2,6 +2,7 @@ package Board;
 
 import BoardPopularity.BoardPopularity;
 import BoardPopularity.BoardPopularityDAO;
+import Custom.RQ;
 import File.BoardFile;
 import File.BoardFileDAO;
 import org.apache.commons.fileupload.FileItem;
@@ -150,14 +151,14 @@ public class ActionPost {
                     }
                 }else{
                     if(item.getSize() == 0) continue;
-                    BoardFile boardFile = new BoardFile();
-
-                    boardFile.setOrgName(item.getName());
                     String[] contentType = item.getContentType().split("/");
                     String realName = System.currentTimeMillis() + "." + contentType[1];
-                    boardFile.setRealName(realName);
-                    boardFile.setContentType(item.getContentType());
-                    boardFile.setLength((int) item.getSize());
+                    BoardFile boardFile = BoardFile.builder()
+                            .orgName(item.getName())
+                            .realName(realName)
+                            .ContentType(item.getContentType())
+                            .length((int) item.getSize())
+                            .build();
                     boardFiles.add(boardFile);
 
                     File saveFile = new File(fileRepository +"/"+realName);
@@ -186,7 +187,7 @@ public class ActionPost {
                     .bwriterId(writerId)
                     .password("")
                     .build();
-            int result = boardDAO.insert(board);
+            int result = boardDAO.callInsert(board);
             JSONObject jsonResult = new JSONObject();
 
             for(BoardFile bf : boardFiles){
@@ -287,13 +288,16 @@ public class ActionPost {
                         }
                     }
                 }else{ // 파일일 때 처리
-                    BoardFile boardFile = new BoardFile();
-                    boardFile.setOrgName(item.getName());
+                    if(item.getSize() == 0) continue;
                     String[] contentType = item.getContentType().split("/");
                     String realName = System.currentTimeMillis() + "." + contentType[1];
-                    boardFile.setRealName(realName);
-                    boardFile.setContentType(item.getContentType());
-                    boardFile.setLength((int) item.getSize());
+
+                    BoardFile boardFile = BoardFile.builder()
+                            .orgName(item.getName())
+                            .realName(realName)
+                            .ContentType(item.getContentType())
+                            .length((int) item.getSize())
+                            .build();
                     boardFiles.add(boardFile);
 
                     File saveFile = new File(fileRepository + "/" + realName);
@@ -386,6 +390,100 @@ public class ActionPost {
             request.setAttribute("board", board);
             request.setAttribute("password", password);
             return "/jsp/normal/edit.jsp";
+        }
+    }
+
+    @RQ(url = "/replyForm")
+    public JSONObject reply(HttpServletRequest request, HttpServletResponse response){
+        try {
+            HttpSession session = request.getSession();
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+            factory.setRepository(new File((fileRepository + "/temp")));
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            List<FileItem> items = upload.parseRequest(request);
+
+            String title = "";
+            String content = "";
+            String type = "";
+            String parentNo = "";
+            String writer = (String) session.getAttribute("login_name");
+            String writerId = (String) session.getAttribute("login_id");
+
+            List<BoardFile> boardFiles = new ArrayList<>();
+
+            for (FileItem item : items) {
+                if(item.isFormField()){
+                    String value = new String(item.getString().getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+
+                    switch (item.getFieldName()){
+                        case "title":{
+                            title = value;
+                            break;
+                        }
+                        case "editor":{
+                            content = value;
+                            break;
+                        }
+                        case "type":{
+                            type = value;
+                            break;
+                        }
+                        case "bno":{
+                            parentNo = value;
+                        }
+                    }
+                } else {
+                    if(item.getSize() == 0) continue;
+                    String[] contentType = item.getContentType().split("/");
+                    String realName = System.currentTimeMillis() + "." + contentType[1];
+
+                    BoardFile boardFile = BoardFile.builder()
+                            .orgName(item.getName())
+                            .realName(realName)
+                            .ContentType(item.getContentType())
+                            .length((int) item.getSize())
+                            .build();
+                    boardFiles.add(boardFile);
+
+                    File saveFile = new File(fileRepository + "/" + realName);
+                    if(saveFile.exists()){
+                        saveFile = new File(fileRepository + "/" + realName +"_1");
+                    }
+                    item.write(saveFile);
+                }
+            }
+
+            Board board = Board.builder()
+                    .btitle(title)
+                    .bwriter(writer)
+                    .bcontent(content)
+                    .bhit(0)
+                    .bdate(LocalDateTime.now())
+                    .type(type)
+                    .bwriterId(writerId)
+                    .parentNo(parentNo)
+                    .build();
+
+            int result = boardDAO.insertReply(board);
+            JSONObject jsonResult = new JSONObject();
+
+            for(BoardFile bf : boardFiles){
+                bf.setNumber(result);
+                boardFileDAO.insert(bf);
+            }
+
+            if(result < 0) {
+                jsonResult.put("status", false);
+                jsonResult.put("message", "등록 실패");
+            } else {
+                jsonResult.put("status", true);
+                jsonResult.put("url", "/board/list?type="+type);
+                jsonResult.put("message", "등록 성공");
+            }
+            return jsonResult;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }
