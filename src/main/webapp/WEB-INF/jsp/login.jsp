@@ -18,9 +18,9 @@
     비밀번호 <label><input type="password" name="user_pw"></label><br/>
     <input type="submit" value="로그인">
     <input type="reset" value="다시입력"> <br/>
-    <a href="/board/normal/list?type=normal&pageIndex=1&pageSize=10">일반 게시판</a> <br/>
-    <a href="register.jsp">회원가입</a> <br/>
-    <a href="search.jsp">아이디 및 비밀번호 찾기</a>
+    <a href="${pageContext.request.contextPath}/board/normal/list?type=normal&pageIndex=1&pageSize=10">일반 게시판</a> <br/>
+    <a href="${pageContext.request.contextPath}/access/register">회원가입</a> <br/>
+    <a href="${pageContext.request.contextPath}/access/search">아이디 및 비밀번호 찾기</a>
   </form>
 </body>
 </html>

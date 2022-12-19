@@ -22,12 +22,11 @@ public class LogoutServlet extends HttpServlet {
     }
 
     private void doHandle(HttpServletRequest request, HttpServletResponse response){
-
         HttpSession session = request.getSession();
         session.invalidate();
         RequestDispatcher dispatch;
 
-        dispatch = request.getRequestDispatcher("/jsp/login.jsp");
+        dispatch = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
         try {
             dispatch.forward(request, response);
         } catch (ServletException | IOException e) {

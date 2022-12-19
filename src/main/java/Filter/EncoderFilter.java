@@ -12,7 +12,7 @@ import java.util.Set;
 @WebFilter(
         urlPatterns = "/*",
         initParams = {
-                @WebInitParam(name="no.auth.urls", value="/WEB-INF/jsp/login.jsp"),
+//                @WebInitParam(name="no.auth.urls", value="/WEB-INF/jsp/login.jsp"),
                 @WebInitParam(name="no.auth.urls", value="/login"),
                 @WebInitParam(name="login.url", value="/"),
                 @WebInitParam(name="encoding", value="utf-8")
@@ -70,7 +70,7 @@ public class EncoderFilter implements Filter {
 
         boolean isLogin = value != null ? (Boolean) value : false;
 
-        return (isLogin || pathInfo.contains("/board/normal") ||
-                pathInfo.contains("/jsp/") || authUrls.contains(pathInfo));
+        return (isLogin || pathInfo.contains("/board/normal") || pathInfo.contains("/access")
+                 || authUrls.contains(pathInfo));
     }
 }

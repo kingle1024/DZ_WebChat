@@ -14,12 +14,12 @@
 <body>
 <h1>공지사항</h1>
 <c:if test="${true eq login_admin}">
-    <a href="/WEB-INF/jsp/notice/add.jsp">글쓰기</a>
+    <a href="${pageContext.request.contextPath}/board/notice/add">글쓰기</a>
 </c:if>
 <form name="searchForm" id="searchForm" action="list" method="get">
     <label for="search"></label><input type="text" placeholder="검색할 제목 입력" id="search" name="search" autofocus>
     <input type="hidden" id="type" name="type" value="${type}">
-    <input type="submit" value="검색">
+    <input type="submit" value="검색" value="${param.search}">
 </form>
 <table>
     <thead>
