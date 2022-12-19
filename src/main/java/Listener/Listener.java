@@ -2,6 +2,7 @@ package Listener;
 
 import Board.BoardDAO;
 import BoardPopularity.BoardPopularityDAO;
+import Chat.ChatDAO;
 import File.BoardFileDAO;
 import Member.MemberDAO;
 
@@ -26,6 +27,7 @@ public class Listener implements ServletContextListener {
             BoardDAO.setDataFactory(dataFactory);
             BoardFileDAO.setDataFactory(dataFactory);
             BoardPopularityDAO.setDataFactory(dataFactory);
+            ChatDAO.setDataFactory(dataFactory);
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }
@@ -36,5 +38,4 @@ public class Listener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
 
     }
-
 }
