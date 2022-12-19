@@ -19,11 +19,11 @@
         <a href="/login">메인 페이지</a> <br/>
     </c:when>
     <c:otherwise>
-        <a href="/jsp/login.jsp">로그인</a> <br/>
+        <a href="/WEB-INF/jsp/login.jsp">로그인</a> <br/>
     </c:otherwise>
 </c:choose>
 
-<a href="/jsp/normal/add.jsp">글쓰기</a> <br/>
+<a href="/WEB-INF/jsp/normal/add.jsp">글쓰기</a> <br/>
 <form name="searchForm" id="searchForm" action="" method="get">
     <label for="search"></label><input type="text" placeholder="검색할 제목 입력" id="search" name="search" autofocus>
     <input type="submit" value="검색">
@@ -41,7 +41,8 @@
     <tbody>
     <c:forEach var="board" items="${boardsList}" varStatus = "status">
         <tr>
-            <td>${status.count}</td>
+<%--            <td>${status.count}</td>--%>
+            <td>${board.bno}</td>
             <td><a href="${pageContext.request.contextPath}/board/normal/view?no=${board.bno}">${board.btitle}</a></td>
             <td>${board.bwriter}</td>
             <td>${board.bdate}</td>

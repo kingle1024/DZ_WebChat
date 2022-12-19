@@ -18,7 +18,7 @@ ${login_name} <br/>
 
 <a href="${pageContext.request.contextPath}/member/view">내정보 보기</a> <br/>
 <c:if test="${true eq login_admin}">
-    <a href="${pageContext.request.contextPath}/admin/memberList">회원 리스트 보기</a> <br/>
+    <a href="${pageContext.request.contextPath}/admin/member/list">회원 리스트 보기</a> <br/>
 </c:if>
 <a href="${pageContext.request.contextPath}/board/list?type=notice">공지사항</a> <br/>
 <a href="${pageContext.request.contextPath}/board/list?type=qna">QnA 게시판</a> <br/>

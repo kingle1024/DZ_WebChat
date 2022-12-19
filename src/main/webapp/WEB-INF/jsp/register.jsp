@@ -12,7 +12,7 @@
     <title>회원가입</title>
 </head>
 <body>
-<form action="sign" method="post" id="signUpForm">
+<form action="/member/insert" method="post" id="signUpForm">
     <div class="info-enter">
         <div class="inner">
             <h3>정보입력</h3>
@@ -20,7 +20,7 @@
                 <ul>
                     <li>
                         <input type="text" id="userName" name="userName" pattern=".{2,12}"
-                               title="3 char" value="1234"
+                               title="3 char" value=""
                                onfocus="if(this.value === '이름') this.value = '';" placeholder="이름">
                     </li>
                     <li>
@@ -33,7 +33,7 @@
                            onfocus="FocusIn_PwdForm(this);"
                            title="새창으로 열림">비밀번호 도움말</a>
                         <!-- 비밀번호가 안전한 경우 input에 class="usable" 추가, 비밀번호가 조건에 맞지않는 경우 class="incorrect" 추가 -->
-                        <p class="enter-guide">안전한 사용을 위해 영문, 숫자, 특수문자 조합 8~15자를 사용해 주세요.</p>
+<%--                        <p class="enter-guide">안전한 사용을 위해 영문, 숫자, 특수문자 조합 8~15자를 사용해 주세요.</p>--%>
                         <p class="txt01" style="display:none">완벽한 비밀번호 입니다.</p>
                         <!-- 비밀번호가 안전한 경우 -->
                         <p class="txt02" style="display:none" id="password_err">유추하기 쉬운 비밀번호 입니다.</p>
@@ -49,12 +49,12 @@
                             <option value="011" selected>011</option>
                         </select>
                         -
-                        <input type="text" name="mobile_tel2" id="mobile_tel2" value="1234">
+                        <input type="text" name="mobile_tel2" id="mobile_tel2" value="">
                         -
-                        <input type="text" name="mobile_tel3" id="mobile_tel3" value="1234">
+                        <input type="text" name="mobile_tel3" id="mobile_tel3" value="">
                     </li>
                     <li>
-                        <input type="text" name="email" id="email" value="1234" placeholder="이메일">
+                        <input type="text" name="email" id="email" value="" placeholder="이메일">
                         @
                         <select id="emailDomain">
                             <option value="">선택</option>
@@ -66,53 +66,53 @@
             </div>
         </div>
     </div>
-    <div class="terms-agree">
-        <div class="inner">
-            <h3>약관동의</h3>
-            <div class="terms-cont">
-                <div class="all-agree">
-                    <label for="cb_agreeAll">
-                        <input type="checkbox" id="cb_agreeAll" onclick="ToggleAllProvisions(this);">
-                        전체동의
-                    </label>
-                </div>
-                <div class="terms-count-inner">
-                    <div class="check-set">
-                        <label for="cbProvision1">
-                            <input type="checkbox" onclick="ConfirmProvision(this)"
-                                   id="cbProvision1" name="cbProvision1">
-                            옥션 이용약관
-                            <span class="text_importance"> (필수)</span>
-                        </label>
-                        <a target="_blank" class="txt-view-all" href="#">전체보기</a>
-                    </div>
+<%--    <div class="terms-agree">--%>
+<%--        <div class="inner">--%>
+<%--            <h3>약관동의</h3>--%>
+<%--            <div class="terms-cont">--%>
+<%--                <div class="all-agree">--%>
+<%--                    <label for="cb_agreeAll">--%>
+<%--                        <input type="checkbox" id="cb_agreeAll" onclick="ToggleAllProvisions(this);">--%>
+<%--                        전체동의--%>
+<%--                    </label>--%>
+<%--                </div>--%>
+<%--                <div class="terms-count-inner">--%>
+<%--                    <div class="check-set">--%>
+<%--                        <label for="cbProvision1">--%>
+<%--                            <input type="checkbox" onclick="ConfirmProvision(this)"--%>
+<%--                                   id="cbProvision1" name="cbProvision1">--%>
+<%--                            옥션 이용약관--%>
+<%--                            <span class="text_importance"> (필수)</span>--%>
+<%--                        </label>--%>
+<%--                        <a target="_blank" class="txt-view-all" href="#">전체보기</a>--%>
+<%--                    </div>--%>
 
-                    <div class="check-set">
-                        <label for="cbFinance">
-                            <input type="checkbox" onclick="ConfirmProvision(this);"
-                                   id="cbFinance" name="cbFinance">
-                            전자금융거래 이용약관
-                            <span class="text_importance"> (필수)</span>
-                        </label>
-                        <a target="_blank" class="txt-view-all" href="#">전체보기</a>
-                    </div>
+<%--                    <div class="check-set">--%>
+<%--                        <label for="cbFinance">--%>
+<%--                            <input type="checkbox" onclick="ConfirmProvision(this);"--%>
+<%--                                   id="cbFinance" name="cbFinance">--%>
+<%--                            전자금융거래 이용약관--%>
+<%--                            <span class="text_importance"> (필수)</span>--%>
+<%--                        </label>--%>
+<%--                        <a target="_blank" class="txt-view-all" href="#">전체보기</a>--%>
+<%--                    </div>--%>
 
-                    <div class="check-set">
-                        <label for="cbThirdParty">
-                            <input type="checkbox" onclick="ConfirmProvision(this);"
-                                   id="cbThirdParty" name="cbThirdParty">
-                            개인정보 제3자(판매자) 제공
-                            <span class="text_importance"> (선택)</span>
-                        </label>
-                        <a href="#" class="txt-view-all" onclick="window.open('https://memberssl.auction.co.kr/membership/signup/popup/Popup_ThirdParty.aspx', 'CLIENT_WINDOW', 'resizable=yes scrollbars=yes')">내용보기</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <input type="submit" id="signUpButton">
-    <button type="button" id="cancelButton">취소</button>
+<%--                    <div class="check-set">--%>
+<%--                        <label for="cbThirdParty">--%>
+<%--                            <input type="checkbox" onclick="ConfirmProvision(this);"--%>
+<%--                                   id="cbThirdParty" name="cbThirdParty">--%>
+<%--                            개인정보 제3자(판매자) 제공--%>
+<%--                            <span class="text_importance"> (선택)</span>--%>
+<%--                        </label>--%>
+<%--                        <a href="#" class="txt-view-all" onclick="window.open('https://memberssl.auction.co.kr/membership/signup/popup/Popup_ThirdParty.aspx', 'CLIENT_WINDOW', 'resizable=yes scrollbars=yes')">내용보기</a>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--    </div>--%>
+<%--    <input type="submit" id="signUpButton">--%>
     <input type="button" value="회원가입" id="insertButton">
+    <input type="button" id="back" value="이전">
 </form>
 
     <script>
@@ -125,6 +125,7 @@
 
         insertButton.onclick = (event) => {
             if (valid(event)) {
+                event.preventDefault();
                 signUp();
             }
         };
@@ -144,7 +145,7 @@
 
             function signUp(){
                 // 회원가입 처리
-                fetch('member/dupUidCheck?id='+id.value)
+                fetch('/member/dupUidCheck?id='+id.value)
                     .then(response => response.json())
                     .then(jsonResult => {
                         let uid_valid_msg = document.querySelector("#uid_valid_msg");
@@ -165,7 +166,7 @@
                                 "phone" : mobile_tel + "-" + this.mobile_tel2.value+"-"+this.mobile_tel3.value
                             };
 
-                            fetch('member/insert', {
+                            fetch('/member/insert', {
                                 method : 'POST',
                                 headers : {
                                     'Content-Type' : 'application/json;charset=utf-8'
@@ -182,15 +183,15 @@
                         }
                     });
             }
-
-            async function dupUidCheck(){
-                let response = await fetch('member/dupUidCheck?id='+id.value);
-                let jsonResult = await response.json();
-
-                let uid_valid_msg = document.querySelector("#uid_valid_msg");
-                uid_valid_msg.innerHTML = "[" + id.value + "]" + jsonResult.message;
-            }
         </script>
+    <script>
+        async function dupUidCheck(){
+            let response = await fetch('/member/dupUidCheck?id='+id.value);
+            let jsonResult = await response.json();
+            let uid_valid_msg = document.querySelector("#uid_valid_msg");
+            uid_valid_msg.innerHTML = "[" + id.value + "]" + jsonResult.message;
+        }
+    </script>
 <script>
     const calcForm = document.querySelector("#signUpForm");
     calcForm.addEventListener("submit", (event) => {
@@ -213,7 +214,7 @@
             return false;
         }
 
-        alert('가입..');
+        alert('가입되었습니다.');
 
         return true;
     });

@@ -1,4 +1,4 @@
-package Auth;
+package Member;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
