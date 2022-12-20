@@ -1,5 +1,12 @@
 package Page;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+@Builder
+@Data
+@AllArgsConstructor
 public class PageUtil {
     // 전체 개수
     private final long totalCount;
@@ -14,39 +21,30 @@ public class PageUtil {
     // 페이지 이동 시 전달되는 파라미터(쿼리xmfld)
     private final String queryString;
 
-    public PageUtil(long totalCount, long pageSize, long pageIndex, String queryString){
-        this.totalCount = totalCount;
-        this.pageSize = pageSize;
-        this.pageIndex = pageIndex;
-        this.queryString = queryString;
-    }
     public String paper(){
         init();
         StringBuilder sb = new StringBuilder();
 
-        String addQueryString = "";
-        if(queryString != null && queryString.length() > 0){
-            addQueryString = "&" + queryString;
-        }
         // 이전 페이지 처리
-        if(startPage != pageIndex) {
-            sb.append(String.format("<a href='?pageIndex=%d%s'> &lt;&lt;</a>", 1, addQueryString));
+        if(startPage != pageIndex && totalCount != 0) {
+            sb.append(String.format("<a href=\"#\" onclick=\"searchF('%d')\">&lt;&lt;</a>", 1));
             sb.append("&nbsp;");
-            sb.append(String.format("<a href='?pageIndex=%d%s'> &lt; </a>", pageIndex-1, addQueryString));
+            sb.append(String.format("<a href=\"#\" onclick=\"searchF('%d')\">&lt;</a>", pageIndex-1));
         }
 
         for(long i = startPage; i<= endPage; i++){
             if(i == pageIndex)
                 sb.append(String.format("<span style='font-size:1.3rem;'> %d </span>", i));
-            else
-                sb.append(String.format("<a href='?pageIndex=%d%s'>%d</a>", i, addQueryString, i));
+            else {
+                sb.append(String.format("<a href=\"#\" onclick=\"searchF('%d')\">%d</a>", i, i));
+            }
             sb.append(System.lineSeparator());
         }
 
-        if(endPage != pageIndex){
-            sb.append(String.format("<a href='?pageIndex=%d%s'> &gt; </a>", pageIndex+1, addQueryString));
+        if(endPage != pageIndex && totalCount != 0){
+            sb.append(String.format("<a href=\"#\" onclick=\"searchF('%d')\">&gt;</a>", pageIndex+1));
             sb.append("&nbsp;");
-            sb.append(String.format("<a href='?pageIndex=%d%s'> &gt;&gt;</a>", endPage, addQueryString));
+            sb.append(String.format("<a href=\"#\" onclick=\"searchF('%d')\">&gt; &gt;</a>", (int) Math.ceil(totalCount / 10)+1));
         }
 
         sb.append(System.lineSeparator());
