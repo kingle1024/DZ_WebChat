@@ -47,10 +47,10 @@ public class BoardDAO implements BoardRepository{
                     "from boards " +
                     "where isDelete = 0 " +
                     "and type = ? " +
-                    "and btitle like ? ";
+                    "and btitle like concat('%', ?, '%') ";
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, type);
-            pstmt.setString(2, "%"+search+"%");
+            pstmt.setString(2, search);
 
             ResultSet rs = pstmt.executeQuery();
             rs.next();
@@ -66,16 +66,32 @@ public class BoardDAO implements BoardRepository{
     public List<Board> list(String search, String type, BoardParam boardParam){
         try{
             open();
-            String query = "select * " +
-                    "from boards " +
-                    "where isDelete = 0 " +
-                    "and type = ? " +
-                    "and btitle like concat('%', ?  , '%') order by bno desc " +
-                    "limit "+ boardParam.getPageStart()+", " + boardParam.getPageEnd();
+            String query =
+                    "select * " +
+                    "from boards as search " +
+                    "join ("+
+                        "select bno "+
+                        "from boards " +
+                        "where isDelete = 0 " +
+                        "and type = ? ";
 
+            if(search.length() > 0) query += " and btitle like concat('%', ?  , '%') ";
+
+            query += " order by parentNo desc, bno " +
+                        "limit ?, ? " +
+                    ") as covering "+
+                    "where search.bno = covering.bno";
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, type);
-            pstmt.setString(2, search);
+
+            int lastIndex = 2;
+            if(search.length() > 0){
+                pstmt.setString(lastIndex, search);
+                lastIndex += 1;
+            }
+
+            pstmt.setLong(lastIndex, boardParam.getPageStart());
+            pstmt.setLong(lastIndex+1, boardParam.getPageEnd());
 
             ResultSet rs = pstmt.executeQuery();
             List<Board> boards = new ArrayList<>();
