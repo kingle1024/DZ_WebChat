@@ -1,48 +1,26 @@
 package Board;
 
 import BoardPopularity.BoardPopularity;
+import Mvc.BaseDAO;
 import Page.BoardParam;
 
-import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BoardDAO implements BoardRepository{
-    private Connection con;
-
-    private PreparedStatement pstmt;
-    private static DataSource dataFactory;
-
-    public static void setDataFactory(DataSource dataFactory) {
-        BoardDAO.dataFactory = dataFactory;
-    }
-
-    private void open(){
-        try{
-            con = dataFactory.getConnection();
-        } catch (SQLException e){
-            throw new RuntimeException();
-        }
-    }
-
-    private void close() {
-        try {
-            if (pstmt != null) {
-                pstmt.close();
-            }
+public class BoardDAO extends BaseDAO implements BoardRepository {
 
 
-            if (con != null) {
-                con.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void setDataFactory(DataSource dataFactory) {
+//        BoardDAO.dataFactory = dataFactory;
+//    }
+
     public long listSize(String search, String type){
         try{
-            open();
+//            open();
             String query = "select count(*) " +
                     "from boards " +
                     "where isDelete = 0 " +
@@ -65,7 +43,7 @@ public class BoardDAO implements BoardRepository{
 
     public List<Board> list(String search, String type, BoardParam boardParam){
         try{
-            open();
+//            open();
             String query =
                     "select * " +
                     "from boards as search " +
@@ -120,7 +98,7 @@ public class BoardDAO implements BoardRepository{
     public Board viewBoard(String no){
         String query = "select * from boards where bno = ?";
         try{
-            open();
+            // open();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, no);
             ResultSet rs = pstmt.executeQuery();
@@ -151,7 +129,7 @@ public class BoardDAO implements BoardRepository{
     public boolean findByNoAndPassword(String no, String password){
         String query = "select * from boards where bno = ? and password = ?";
         try{
-            open();
+            // open();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, no);
             pstmt.setString(2, password);
@@ -170,7 +148,7 @@ public class BoardDAO implements BoardRepository{
                 "SET bhit = bhit+1 " +
                 "WHERE bno = ?";
         try {
-            open();
+//            open();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, no);
 
@@ -184,7 +162,7 @@ public class BoardDAO implements BoardRepository{
     public int del(String bno){
         CallableStatement cstmt = null;
         try {
-            open();
+            // open();
             cstmt = con.prepareCall("{call DEL_BOARD(?)}");
             cstmt.setString(1, bno);
 
@@ -206,7 +184,7 @@ public class BoardDAO implements BoardRepository{
     }
     public BoardPopularity findByBnoAndUserId(String bno, String userId){
         try{
-            open();
+            // open();
             String query = "select * from board_popularity where bno = ? and userId = ?";
 
             pstmt = con.prepareStatement(query);
@@ -230,7 +208,7 @@ public class BoardDAO implements BoardRepository{
     }
     public boolean boardPopularity(String bno, String userId){
         try {
-            open();
+//            open();
             String query = "insert into board_popularity(bno, userId, type) values(?, ?, now())";
             pstmt = con.prepareStatement(query);
 
@@ -245,7 +223,7 @@ public class BoardDAO implements BoardRepository{
     public int callInsert(Board board){
         CallableStatement cstmt = null;
         try{
-            open();
+//            open();
             cstmt = con.prepareCall("{call INSERT_BOARD(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
             cstmt.setString(1, board.getBtitle());
             cstmt.setString(2, board.getBwriter());
@@ -268,7 +246,7 @@ public class BoardDAO implements BoardRepository{
     }
     public int insert(Board board){
         try {
-            open();
+//            open();
             con.setAutoCommit(false);
             String query = "insert into boards" +
                     "(btitle, bwriter, bcontent, bhit, type, isDelete, bwriterId, password) " +
@@ -317,7 +295,7 @@ public class BoardDAO implements BoardRepository{
     }
     public int insertReply(Board board){
         try {
-            open();
+//            open();
             String query = "insert into boards" +
                     "(btitle, bwriter, bcontent, bhit, type, isDelete, bwriterId, password, parentNo) " +
                     "values (?, ?, ?, ?, ?, 0, ?, ?, ?)";
@@ -345,7 +323,7 @@ public class BoardDAO implements BoardRepository{
                 "set btitle = ?, bcontent = ?, bwriter = ? " +
                 "where bno = ?";
         try {
-            open();
+//            open();
             pstmt = con.prepareStatement(query);
             pstmt.setString(1, board.getBtitle());
             pstmt.setString(2, board.getBcontent());

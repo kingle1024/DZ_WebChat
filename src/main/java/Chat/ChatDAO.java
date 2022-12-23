@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatDAO {
+public class ChatDAO implements ChatRepository{
     private Connection con;
 
     private PreparedStatement pstmt;

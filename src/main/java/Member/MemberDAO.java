@@ -1,5 +1,7 @@
 package Member;
 
+import Page.BoardParam;
+
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -54,7 +56,7 @@ public class MemberDAO implements MemberRepository{
                                 .email(rs.getString("email"))
                                 .name(rs.getString("name"))
                                 .phone(rs.getString("phone"))
-                                .isAdmin(rs.getBoolean("isAdmin"))
+                                .isAdmins(rs.getBoolean("isAdmin"))
                                 .userStatus(rs.getString("userStatus"))
                                 .createdate(rs.getTimestamp("createdate").toLocalDateTime())
                                 .build();
@@ -125,12 +127,32 @@ public class MemberDAO implements MemberRepository{
             close();
         }
     }
-    public List<Member> list(String search){
+    public long listSize(String name){
+        try{
+            open();
+            String query = "select count(*) " +
+                    "from member " +
+                    " " +
+                    "where name like concat('%', ?, '%') ";
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, name);
+
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+
+            return rs.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            close();
+        }
+    }
+    public List<Member> search(String search){
         try {
             open();
-            String query = "select * from member where name like ?";
+            String query = "select * from member where name like concat('%', ?, '%') limit 5";
             pstmt = con.prepareStatement(query);
-            pstmt.setString(1, "%"+search+"%");
+            pstmt.setString(1, search);
 
             ResultSet rs = pstmt.executeQuery();
             List<Member> members = new ArrayList<>();
@@ -141,11 +163,49 @@ public class MemberDAO implements MemberRepository{
                         .name(rs.getString("name"))
                         .phone(rs.getString("phone"))
                         .email(rs.getString("email"))
-                        .isAdmin(rs.getBoolean("isAdmin"))
+                        .isAdmins(rs.getBoolean("isAdmin"))
+                        .admin(rs.getBoolean("isAdmin"))
                         .userStatus(rs.getString("userStatus"))
                         .createdate(rs.getTimestamp("createdate").toLocalDateTime())
                         .build();
+                Timestamp loginDateTime = rs.getTimestamp("LOGINDATETIME");
+                if(loginDateTime != null){
+                    LocalDateTime localDateTime = loginDateTime.toLocalDateTime();
+                    m.setLoginDateTime(localDateTime);
+                }
 
+                members.add(m);
+            }
+            return members;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            close();
+        }
+    }
+    public List<Member> list(String search, BoardParam boardParam){
+        try {
+            open();
+            String query = "select * from member where name like concat('%', ?, '%') limit ?, ?";
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, search);
+            pstmt.setLong(2, boardParam.getPageStart());
+            pstmt.setLong(3, boardParam.getPageEnd());
+
+            ResultSet rs = pstmt.executeQuery();
+            List<Member> members = new ArrayList<>();
+
+            while(rs.next()){
+                Member m = Member.builder()
+                        .userId(rs.getString("userid"))
+                        .name(rs.getString("name"))
+                        .phone(rs.getString("phone"))
+                        .email(rs.getString("email"))
+                        .isAdmins(rs.getBoolean("isAdmin"))
+                        .admin(rs.getBoolean("isAdmin"))
+                        .userStatus(rs.getString("userStatus"))
+                        .createdate(rs.getTimestamp("createdate").toLocalDateTime())
+                        .build();
                 Timestamp loginDateTime = rs.getTimestamp("LOGINDATETIME");
                 if(loginDateTime != null){
                     LocalDateTime localDateTime = loginDateTime.toLocalDateTime();
