@@ -3,7 +3,6 @@ package Board;
 import BoardPopularity.BoardPopularity;
 import BoardPopularity.BoardPopularityDAO;
 import Custom.RQ;
-import File.BoardFile;
 import File.BoardFileDAO;
 import Page.BoardParam;
 import Page.PageUtil;
@@ -12,12 +11,14 @@ import org.json.JSONObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 
 public class Action {
     BoardDAO boardDAO = new BoardDAO();
     BoardFileDAO boardFileDAO = new BoardFileDAO();
     BoardPopularityDAO boardPopularityDAO = new BoardPopularityDAO();
+    BoardService boardService = new BoardService();
 
     @RQ(url = "/qna/add")
     public String qnaAdd(HttpServletRequest request, HttpServletResponse response){
@@ -32,6 +33,42 @@ public class Action {
         return "/jsp/normal/add.jsp";
     }
 
+    @RQ(url ="/search")
+    public JSONObject search(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String search = request.getParameter("search");
+        if(search == null) search = "";
+        String pageIndex = request.getParameter("pageIndex");
+        if(pageIndex == null || pageIndex.length() < 1) pageIndex = String.valueOf(0);
+        String pageSize = request.getParameter("pageSize");
+        if(pageSize == null || pageSize.length() < 1) pageSize = String.valueOf(0);
+        String type = request.getParameter("type");
+
+        BoardParam parameter = BoardParam.builder()
+                .pageIndex(Long.parseLong(pageIndex))
+                .pageSize(Long.parseLong(pageSize))
+                .search(search)
+                .type(type)
+                .build();
+        parameter.init();
+
+        List<Board> boardList = boardDAO.list(search, type, parameter);
+        long totalCount = boardDAO.listSize(search, type);
+
+        PageUtil pageUtil = PageUtil.builder()
+                .totalCount(totalCount)
+                .pageSize(parameter.getPageSize())
+                .pageIndex(parameter.getPageIndex())
+                .build();
+
+        JSONObject jsonResult = new JSONObject();
+        jsonResult.put("message", "성공");
+        jsonResult.put("boardsList", boardList);
+        jsonResult.put("type", type);
+        jsonResult.put("totalCount", totalCount);
+        jsonResult.put("pager", pageUtil.paper());
+        return jsonResult;
+    }
+
     @RQ(url = "/edit")
     public String edit(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
@@ -39,13 +76,9 @@ public class Action {
         String bno = request.getParameter("bno");
         String loginId = (String) session.getAttribute("login_id");
 
-        Board board = boardDAO.viewBoard(bno);
+        BoardView board = boardService.getBoard(bno);
 
-        List<BoardFile> boardFiles = boardFileDAO.list(bno);
-        System.out.println("boardFiles"+boardFiles);
-        request.setAttribute("boardFiles", boardFiles);
-
-        if(!board.getBwriterId().equals(loginId)){
+        if(board.getBwriterId().equals(loginId)){
             request.setAttribute("board", board);
         }
 
@@ -56,8 +89,6 @@ public class Action {
     public String normalList(HttpServletRequest request, HttpServletResponse response){
         String search = request.getParameter("search");
         if(search == null) search = "";
-
-        BoardParam parameter = new BoardParam();
         String pageIndex = request.getParameter("pageIndex");
         if(pageIndex == null) pageIndex = String.valueOf(0);
         String pageSize = request.getParameter("pageSize");
@@ -65,21 +96,23 @@ public class Action {
 
         String type = "normal";
 
-        parameter.setPageIndex(Long.parseLong(pageIndex));
-        parameter.setPageSize(Long.parseLong(pageSize));
-        parameter.setSearch(search);
-        parameter.setType(type);
+        BoardParam parameter = BoardParam.builder()
+                .pageIndex(Long.parseLong(pageIndex))
+                .pageSize(Long.parseLong(pageSize))
+                .search(search)
+                .type(type)
+                .build();
         parameter.init(); // pageIndex, pageSize 갖고 현재 어느 페이지에 있고, 페이징을 어떻게 해줄지 초기 데이터 설정
 
         long totalCount = boardDAO.listSize(search, type);
 
-        String queryString = parameter.getQueryString();
-        PageUtil pageUtil = new PageUtil(
-                totalCount,
-                parameter.getPageSize(),
-                parameter.getPageIndex(),
-                queryString
-        );
+        PageUtil pageUtil = PageUtil.builder()
+                .totalCount(totalCount)
+                .pageSize(parameter.getPageSize())
+                .pageIndex(parameter.getPageIndex())
+                .queryString(parameter.getQueryString())
+                .build();
+
 
         List<Board> boardsList = boardDAO.list(search, type, parameter);
         request.setAttribute("boardsList", boardsList);
@@ -92,32 +125,26 @@ public class Action {
 
     @RQ(url = "/list")
     public String list(HttpServletRequest request, HttpServletResponse response){
-        String search = request.getParameter("search");
-        if(search == null) search = "";
+        System.out.println("mmmmmmmmmm");
+        String search = "";
 
-        BoardParam parameter = new BoardParam();
-        String pageIndex = request.getParameter("pageIndex");
-        if(pageIndex == null) pageIndex = String.valueOf(0);
-        String pageSize = request.getParameter("pageSize");
-        if(pageSize == null) pageSize = String.valueOf(0);
         String type = request.getParameter("type");
-
-        parameter.setPageIndex(Long.parseLong(pageIndex));
-        parameter.setPageSize(Long.parseLong(pageSize));
-        parameter.setSearch(search);
-        parameter.setType(type);
+        BoardParam parameter = BoardParam.builder()
+                .pageIndex(0)
+                .pageSize(0)
+                .type(type)
+                .build();
         parameter.init();
 
         List<Board> boardsList = boardDAO.list(search, type, parameter);
         long totalCount = boardDAO.listSize(search, type);
 
-        String queryString = parameter.getQueryString();
-        PageUtil pageUtil = new PageUtil(
-                totalCount,
-                parameter.getPageSize(),
-                parameter.getPageIndex(),
-                queryString
-        );
+        PageUtil pageUtil = PageUtil.builder()
+                .totalCount(totalCount)
+                .pageSize(parameter.getPageSize())
+                .pageIndex(parameter.getPageIndex())
+                .queryString(parameter.getQueryString())
+                .build();
 
         request.setAttribute("boardsList", boardsList);
         request.setAttribute("type", type);
@@ -130,8 +157,8 @@ public class Action {
     @RQ(url = "/normal/view")
     public String normalView(HttpServletRequest request, HttpServletResponse response){
         String no = request.getParameter("no");
-        boardDAO.addHit(no);
-        Board board = boardDAO.viewBoard(no);
+        BoardView board = boardService.viewAndCount(no);
+
         request.setAttribute("board", board);
         return "/jsp/normal/view.jsp";
     }
@@ -140,15 +167,14 @@ public class Action {
     public String noticeView(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         String no = request.getParameter("no");
-        boardDAO.addHit(no);
-        Board board = boardDAO.viewBoard(no);
-        List<BoardFile> boardFiles = boardFileDAO.list(no);
+
+        BoardView board = boardService.viewAndCount(no);
 
         long likeCount = boardPopularityDAO.findByBnoAndType(board.getBno(), "like");
         long disLikeCount = boardPopularityDAO.findByBnoAndType(board.getBno(), "dislike");
         String userId = (String) session.getAttribute("login_id");
 
-        BoardPopularity boardPopularity = boardPopularityDAO.findByBnoAndUserIdAndIsDelete(no, userId);
+        BoardPopularity boardPopularity = boardService.findByBnoAndUserIdAndIsDelete(no, userId);
 
         if(boardPopularity == null){
             request.setAttribute("myStatus", "no");
@@ -161,7 +187,6 @@ public class Action {
             }
         }
 
-        request.setAttribute("boardFiles", boardFiles);
         request.setAttribute("board", board);
         request.setAttribute("like", likeCount);
         request.setAttribute("dislike", disLikeCount);
@@ -172,13 +197,14 @@ public class Action {
     public JSONObject del(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         String bno = request.getParameter("bno");
-        Board board = boardDAO.viewBoard(bno);
+        Board board = boardService.view(bno);
+
         String loginId = (String) session.getAttribute("login_id");
         JSONObject jsonResult = new JSONObject();
         if(!board.getBwriterId().equals(loginId)){
             jsonResult.put("message", "글쓴이가 아니면 삭제할 수 없습니다.");
             jsonResult.put("status", false);
-        }else if(boardDAO.del(bno) < 0){
+        }else if(boardService.del(bno) < 0){
             jsonResult.put("message", "삭제 실패");
             jsonResult.put("status", false);
         }else{
@@ -191,7 +217,7 @@ public class Action {
     @RQ(url = "/replyForm")
     public String replyForm(HttpServletRequest request, HttpServletResponse response){
         String bno = request.getParameter("bno");
-        Board board = boardDAO.viewBoard(bno);
+        BoardView board = boardService.viewAndCount(bno);
         request.setAttribute("board", board);
 
         return "/jsp/qna/replyForm.jsp";
