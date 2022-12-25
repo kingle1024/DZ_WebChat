@@ -33,21 +33,8 @@ public class AdminServlet extends HttpServlet {
         customCofig.action(request, response, objectMap, methodMap);
     }
 
-    private void validAdmin(HttpServletRequest request, HttpServletResponse response) {
-        isAdmin = (boolean) request.getSession().getAttribute("login_admin");
-        if(!isAdmin) {
-            try {
-                response.sendRedirect("/");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-    }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         System.out.println("AdminServlet doPost > ");
-
     }
 }
