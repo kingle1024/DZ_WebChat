@@ -134,7 +134,7 @@ public class ActionPost {
                     .name(name)
                     .phone(phone)
                     .email(email)
-                    .isAdmin(false)
+                    .isAdmins(false)
                     .userStatus("USE")
                     .createdate(LocalDateTime.now())
                     .build();

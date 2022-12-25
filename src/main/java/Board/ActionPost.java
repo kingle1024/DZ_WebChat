@@ -1,6 +1,5 @@
 package Board;
 
-import BoardPopularity.BoardPopularity;
 import BoardPopularity.BoardPopularityDAO;
 import Custom.RQ;
 import File.BoardFile;
@@ -27,6 +26,8 @@ public class ActionPost {
     BoardDAO boardDAO = new BoardDAO();
     BoardFileDAO boardFileDAO = new BoardFileDAO();
     String fileRepository = "/Users/ejy1024/Documents/upload";
+    BoardService boardService = new BoardService();
+    BoardPopularityService boardPopularityService = new BoardPopularityService();
 
     public JSONObject popularity(HttpServletRequest request, HttpServletResponse response){
         try {
@@ -38,40 +39,9 @@ public class ActionPost {
             String bno = String.valueOf(jsonObject.getInt("bno"));
             String type = jsonObject.getString("type");
             String loginId = (String) session.getAttribute("login_id");
-            System.out.println(bno + " " + type + " " + loginId);
 
-            BoardPopularity boardPopularity = boardPopularityDAO.findByBnoAndUserIdAndIsDelete(bno, loginId);
-            JSONObject jsonResult = new JSONObject();
-            if (boardPopularity == null) { // 기존에 데이터가 없는 경우 추가
-                boardPopularity = new BoardPopularity();
-                boardPopularity.setBno(Integer.parseInt(bno));
-                boardPopularity.setUserId(loginId);
-                boardPopularity.setType(type);
-                boardPopularityDAO.insert(boardPopularity);
-                jsonResult.put("message", "성공");
-                jsonResult.put("status", "add");
-            } else {
-                // 동일한 데이터가 존재하면 제거
-                if (boardPopularity.getType().equals(type)) {
-                    System.out.println("취소");
-                    // del
-                    boardPopularity.setDelete(true);
+            JSONObject jsonResult = boardPopularityService.insert(bno, loginId, type);
 
-                    boardPopularityDAO.update(boardPopularity);
-                    jsonResult.put("message", "취소되었습니다.");
-                    jsonResult.put("status", "cancel");
-                } else {
-                    // 변경
-                    System.out.println("변경");
-                    boardPopularity.setDelete(true);
-                    boardPopularityDAO.update(boardPopularity);
-                    boardPopularity.setType(type);
-                    boardPopularity.setDelete(false);
-                    boardPopularityDAO.insert(boardPopularity);
-                    jsonResult.put("message", "변경되었습니다.");
-                    jsonResult.put("status", "change");
-                }
-            }
             return jsonResult;
         }catch (IOException e){
             e.printStackTrace();
@@ -94,7 +64,7 @@ public class ActionPost {
                     .password(password)
                     .type(type)
                     .build();
-            int result = boardDAO.insert(board);
+            int result = boardService.normalInsert(board);
 
             JSONObject jsonResult = new JSONObject();
 
@@ -173,7 +143,6 @@ public class ActionPost {
             String writer = (String) session.getAttribute("login_name");
             String writerId = (String) session.getAttribute("login_id");
 
-
             // TODO 등록한 계정이 관리자가 아닐 때에 바로 리턴 처리
 //                    int isAdmin = () session.getAttribute("login_admin");
 
@@ -187,13 +156,8 @@ public class ActionPost {
                     .bwriterId(writerId)
                     .password("")
                     .build();
-            int result = boardDAO.callInsert(board);
+            int result = boardService.insert(board, boardFiles);
             JSONObject jsonResult = new JSONObject();
-
-            for(BoardFile bf : boardFiles){
-                bf.setNumber(result);
-                boardFileDAO.insert(bf);
-            }
 
             if (result < 0) {
                 jsonResult.put("status", false);
@@ -216,32 +180,30 @@ public class ActionPost {
             String jsonStr = in.readLine();
 
             JSONObject jsonObject = new JSONObject(jsonStr);
-            JSONObject jsonResult = new JSONObject();
-
             int bno = (int) jsonObject.get("bno");
-            Board board = boardDAO.viewBoard(String.valueOf(bno));
             String password = (String) jsonObject.get("password");
-            System.out.println(password +" " +board.getPassword());
-            if(!password.equals(board.getPassword())){
+            Board board = boardService.normalView(String.valueOf(bno), password);
+
+            if(board == null){
+                JSONObject jsonResult = new JSONObject();
                 jsonResult.put("status", false);
                 jsonResult.put("message", "비밀번호가 틀립니다.");
-
                 return jsonResult;
             }
 
             String btitle = (String) jsonObject.get("btitle");
             String bcontent = (String) jsonObject.get("bcontent");
             String bwriter = (String) jsonObject.get("bwriter");
-
             board.setBtitle(btitle);
             board.setBcontent(bcontent);
             board.setBwriter(bwriter);
 
-            boolean result = boardDAO.edit(board);
+            boolean result = boardService.edit(board);
+            JSONObject jsonResult = new JSONObject();
             if(!result){
                 jsonResult.put("status", false);
                 jsonResult.put("message", "수정 실패");
-            }else{
+            } else {
                 jsonResult.put("status", true);
                 jsonResult.put("message", "수정 성공");
                 jsonResult.put("url", "/board/normal/view?no="+bno);
@@ -308,12 +270,12 @@ public class ActionPost {
             // TODO 삭제된 데이터 목록을 가져와서 삭제 진행
             JSONObject jsonResult = new JSONObject();
 
-            Board board = boardDAO.viewBoard(String.valueOf(bno));
+            Board board = boardService.view(String.valueOf(bno));
             board.setBtitle(title);
             board.setBcontent(content);
 
-            boolean result = boardDAO.edit(board);
-            if(!result && !uid.equals(board.getBwriterId())){
+            boolean result = boardService.edit(board, uid);
+            if(!result){
                 jsonResult.put("status", false);
                 jsonResult.put("message", "수정 실패");
             }else{
@@ -335,13 +297,13 @@ public class ActionPost {
             JSONObject jsonObject = new JSONObject(jsonStr);
             String password = (String) jsonObject.get("password");
             int bno = (int) jsonObject.get("bno");
-            boolean validPassword = boardDAO.findByNoAndPassword(String.valueOf(bno), password);
+            boolean validPassword = boardService.findByNoAndPassword(String.valueOf(bno), password);
             JSONObject jsonResult = new JSONObject();
 
             if(!validPassword){
                 jsonResult.put("status", false);
                 jsonResult.put("message", "패스워드가 틀립니다.");
-            }else if(boardDAO.del(String.valueOf(bno)) < 0){
+            }else if(boardService.del(String.valueOf(bno)) < 0){
                 jsonResult.put("message", "삭제 실패");
                 jsonResult.put("status", false);
             }else{
@@ -355,6 +317,7 @@ public class ActionPost {
             throw new RuntimeException(e);
         }
     }
+    @RQ(url = "/normal/passwordCheck")
     public JSONObject normalPasswordCheck(HttpServletRequest request, HttpServletResponse response){
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
@@ -363,9 +326,10 @@ public class ActionPost {
             JSONObject jsonObject = new JSONObject(jsonStr);
             String password = (String) jsonObject.get("password");
             int bno = (int) jsonObject.get("bno");
-            boolean validPassword = boardDAO.findByNoAndPassword(String.valueOf(bno), password);
+            boolean result = boardService.findByNoAndPassword(String.valueOf(bno), password);
+
             JSONObject jsonResult = new JSONObject();
-            if(validPassword){
+            if(result){
                 jsonResult.put("status", true);
             }else{
                 jsonResult.put("status", false);
@@ -381,12 +345,11 @@ public class ActionPost {
         String password = request.getParameter("password");
         int bno = Integer.parseInt(request.getParameter("bno"));
 
-        boolean validPassword = boardDAO.findByNoAndPassword(String.valueOf(bno), password);
+        Board board = boardService.normalView(String.valueOf(bno), password);
 
-        if(!validPassword){
+        if(board == null){
             return "/board/normal/view?no="+bno;
         }else{
-            Board board = boardDAO.viewBoard(String.valueOf(bno));
             request.setAttribute("board", board);
             request.setAttribute("password", password);
             return "/jsp/normal/edit.jsp";
@@ -464,13 +427,8 @@ public class ActionPost {
                     .parentNo(parentNo)
                     .build();
 
-            int result = boardDAO.insertReply(board);
+            int result = boardService.insert(board, boardFiles);
             JSONObject jsonResult = new JSONObject();
-
-            for(BoardFile bf : boardFiles){
-                bf.setNumber(result);
-                boardFileDAO.insert(bf);
-            }
 
             if(result < 0) {
                 jsonResult.put("status", false);

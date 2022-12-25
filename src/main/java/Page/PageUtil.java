@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Builder
 @Data
 @AllArgsConstructor
 public class PageUtil {
+    private List<?> list;
     // 전체 개수
     private final long totalCount;
     // 한 페이지에 나오는 개수
