@@ -8,7 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<head><title>채팅 페이지</title></head>
+<head><title>채팅 페이지1</title></head>
 <body>
 <form>
     <!-- 유저 명을 입력하는 텍스트 박스(기본 값은 anonymous(익명)) -->
