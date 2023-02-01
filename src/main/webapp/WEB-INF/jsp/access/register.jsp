@@ -16,7 +16,7 @@
 <form action="/member/insert" method="post" id="signUpForm">
     <div class="info-enter">
         <div class="inner">
-            <h3>정보입력</h3>
+            <h3>정보입력안해</h3>
             <div class="info-cont">
                 <ul>
                     <li>
