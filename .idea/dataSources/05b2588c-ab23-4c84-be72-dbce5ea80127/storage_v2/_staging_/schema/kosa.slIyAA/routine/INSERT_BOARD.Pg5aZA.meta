@@ -1,0 +1,2 @@
+#n:INSERT_BOARD
+#i:(varchar(100),varchar(100),varchar(100),int,varchar(100),tinyint,varchar(100),varchar(100),int)

@@ -77,8 +77,6 @@ public class CustomCofig {
 
                 methodMap.put(action, method);
                 if(!className2ObjectMap.containsKey(filePath)){
-                    System.out.println("cls.getDeclaredConstructor():"+filePath);
-                    System.out.println(cls);
                     Object object = cls.getDeclaredConstructor().newInstance();
                     className2ObjectMap.put(filePath, object);
                     objectMap.put(action, object);

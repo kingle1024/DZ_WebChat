@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/">
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <Resource
+            name="jdbc/maria"
+
+            type="javax.sql.DataSource"
+            driverClassName="org.mariadb.jdbc.Driver"
+            url="jdbc:mariadb://localhost:3306/kosa?allowPublicKeyRetrieval=true"
+            username="root"
+            password="passwd"
+            maxActive="4"
+            maxIdle="2"
+            maxWait="5000" />
+</Context>

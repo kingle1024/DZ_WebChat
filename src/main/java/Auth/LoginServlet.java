@@ -1,8 +1,6 @@
 package Auth;
 
 import Member.Member;
-import Member.MemberDAO;
-import Member.MemberRepository;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,10 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @WebServlet(name = "login", value = "/login")
 public class LoginServlet extends HttpServlet {
+    private RequestDispatcher dispatch;
+    private HttpSession session;
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         doHandle(request, response);
@@ -28,43 +27,36 @@ public class LoginServlet extends HttpServlet {
 
     private void doHandle(HttpServletRequest request, HttpServletResponse response){
         try {
-            HttpSession session = request.getSession();
+            session = request.getSession();
             String user_id = request.getParameter("user_id");
+            String pwd = request.getParameter("user_pw");
             if(user_id == null){
                 user_id = (String) session.getAttribute("login_id");
             }
 
-            MemberRepository dao = new MemberDAO();
-            Member member = dao.findById(user_id);
-
-            RequestDispatcher dispatch;
+            LoginService loginService = new LoginService();
+            Member member = loginService.findById(user_id, pwd);
             validMember(request, response, member);
 
-            member.setLoginDateTime(LocalDateTime.now());
-            dao.edit(member);
-
-            session.setAttribute("isLogon", true);
-            session.setAttribute("login_id", user_id);
-            session.setAttribute("login_name", member.getName());
-            session.setAttribute("login_admin", member.isAdmin());
-
-            dispatch = request.getRequestDispatcher("/WEB-INF/jsp/index.jsp");
             dispatch.forward(request, response);
         } catch (IOException | ServletException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void validMember(HttpServletRequest request, HttpServletResponse response, Member m) throws ServletException, IOException {
-        RequestDispatcher dispatch;
-        if(m == null){
+    private void validMember(HttpServletRequest request, HttpServletResponse response, Member member) throws ServletException, IOException {
+        if(member == null){
             request.setAttribute("errorMsg", "아이디 및 비밀번호를 확인하세요.");
             dispatch = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
-            dispatch.forward(request, response);
-        }else if(m.getUserStatus().equals("STOP")){
+        }else if(member.getUserStatus().equals("STOP")){
             request.setAttribute("errorMsg", "정지된 회원입니다.");
             dispatch = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");
-            dispatch.forward(request, response);
+        }else {
+            session.setAttribute("isLogon", true);
+            session.setAttribute("login_id", member.getUserId());
+            session.setAttribute("login_name", member.getName());
+            session.setAttribute("login_admin", member.isAdmins());
+            dispatch = request.getRequestDispatcher("/WEB-INF/jsp/index.jsp");
         }
     }
 }

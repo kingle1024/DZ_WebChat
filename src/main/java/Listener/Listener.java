@@ -16,10 +16,10 @@ import javax.sql.DataSource;
 
 @WebListener
 public class Listener implements ServletContextListener {
-
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try {
+
             Context ctx = new InitialContext();
             Context envContext = (Context) ctx.lookup("java:/comp/env");
             DataSource dataFactory = (DataSource) envContext.lookup("jdbc/maria");
@@ -28,6 +28,7 @@ public class Listener implements ServletContextListener {
             BoardFileDAO.setDataFactory(dataFactory);
             BoardPopularityDAO.setDataFactory(dataFactory);
             ChatDAO.setDataFactory(dataFactory);
+
         } catch (NamingException e) {
             throw new RuntimeException(e);
         }

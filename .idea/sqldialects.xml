@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/05b2588c-ab23-4c84-be72-dbce5ea80127/console_5.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Board/BoardDAO.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/BoardPopularity/BoardPopularityDAO.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Chat/ChatDAO.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/File/BoardFileDAO.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Member/MemberDAO.java" dialect="GenericSQL" />
+  </component>
+</project>

@@ -38,6 +38,42 @@ public class MemberDAO implements MemberRepository{
             e.printStackTrace();
         }
     }
+    public Member findByIdAndPassword(String id, String pwd){
+        open();
+        String query = "select * from member where userid = ? and pwd = ?";
+
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, id);
+            pstmt.setString(2, pwd);
+            ResultSet rs = pstmt.executeQuery();
+
+            Member member = null;
+            if (rs.next()) {
+                member = Member.builder()
+                        .userId(rs.getString("USERID"))
+                        .pwd(rs.getString("PWD"))
+                        .email(rs.getString("email"))
+                        .name(rs.getString("name"))
+                        .phone(rs.getString("phone"))
+                        .isAdmins(rs.getBoolean("isAdmin"))
+                        .userStatus(rs.getString("userStatus"))
+                        .createdate(rs.getTimestamp("createdate").toLocalDateTime())
+                        .build();
+
+                Timestamp loginDateTime = rs.getTimestamp("LOGINDATETIME");
+                if (loginDateTime != null) {
+                    LocalDateTime localDateTime = loginDateTime.toLocalDateTime();
+                    member.setLoginDateTime(localDateTime);
+                }
+            }
+            return member;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close();
+        }
+    }
 
     public Member findById(String id){
         open();
@@ -183,12 +219,12 @@ public class MemberDAO implements MemberRepository{
             close();
         }
     }
-    public List<Member> list(String search, BoardParam boardParam){
+    public List<Member> list(BoardParam boardParam){
         try {
             open();
             String query = "select * from member where name like concat('%', ?, '%') limit ?, ?";
             pstmt = con.prepareStatement(query);
-            pstmt.setString(1, search);
+            pstmt.setString(1, boardParam.getSearch());
             pstmt.setLong(2, boardParam.getPageStart());
             pstmt.setLong(3, boardParam.getPageEnd());
 
@@ -312,6 +348,65 @@ public class MemberDAO implements MemberRepository{
             pstmt.setString(2, id);
             int result = pstmt.executeUpdate();
             return result > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            close();
+        }
+    }
+
+    public List<String> sd(){
+        try {
+            open();
+            String query = "select distinct (sd) from config_emd ";
+            pstmt = con.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+            List<String> sds = new ArrayList<>();
+
+            while(rs.next()){
+                sds.add(rs.getString(1));
+            }
+            return sds;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            close();
+        }
+    }
+
+    public List<String> sgg(String sd){
+        try {
+            open();
+            String query = "select distinct (sgg) from config_emd where sd = ?";
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, sd);
+            ResultSet rs = pstmt.executeQuery();
+            List<String> sgg = new ArrayList<>();
+
+            while(rs.next()){
+                sgg.add(rs.getString(1));
+            }
+            return sgg;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }finally {
+            close();
+        }
+    }
+
+    public List<String> sdName(String sdName){
+        try {
+            open();
+            String query = "select name from config_emd where sgg = ?";
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, sdName);
+            ResultSet rs = pstmt.executeQuery();
+            List<String> sgg = new ArrayList<>();
+
+            while(rs.next()){
+                sgg.add(rs.getString(1));
+            }
+            return sgg;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }finally {

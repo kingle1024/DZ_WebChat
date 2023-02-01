@@ -18,7 +18,8 @@ public class Member {
     private String phone;
     private String email;
     private String userStatus;
-    private boolean isAdmin;
+    private boolean isAdmins;
+    private boolean admin;
     private LocalDateTime createdate;
     private LocalDateTime loginDateTime;
 

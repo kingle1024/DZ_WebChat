@@ -1,15 +1,18 @@
 package Page;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class BoardParam {
-    long pageIndex;
-    long pageSize;
+    private Object pageIndex;
+    private long l_pageIndex;
+    private long pageSize;
 
-    String searchType;
-    String search;
-    String type;
+    private String searchType;
+    private String search;
+    private String type;
 
     /*
     limit 0, 10 --> pageIndex : 1
@@ -18,7 +21,7 @@ public class BoardParam {
      */
     public long getPageStart(){
         init(); // 초기화
-        return (pageIndex - 1) * pageSize;
+        return (l_pageIndex - 1) * pageSize;
     }
 
     public long getPageEnd(){
@@ -27,8 +30,17 @@ public class BoardParam {
     }
 
     public void init(){
-        if(pageIndex < 1){
-            pageIndex = 1;
+        if(pageIndex == null || pageIndex.toString().length() < 1){
+            l_pageIndex = 1;
+        }else{
+            l_pageIndex = Long.parseLong((String) pageIndex);
+        }
+
+        if(search == null){
+            search = "";
+        }
+        if(l_pageIndex < 1){
+            l_pageIndex = 1;
         }
         if(pageSize < 10){
             pageSize = 10;

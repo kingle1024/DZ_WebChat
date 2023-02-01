@@ -6,8 +6,8 @@ import Page.BoardParam;
 import java.util.List;
 
 public interface BoardRepository {
-    long listSize(String search, String type);
-    List<Board> list(String search, String type, BoardParam boardParam);
+    long listSize(BoardParam param);
+    List<Board> list(BoardParam boardParam);
     Board viewBoard(String no);
     boolean findByNoAndPassword(String no, String password);
     void addHit(String no);

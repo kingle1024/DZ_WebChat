@@ -28,6 +28,10 @@ public class Action {
         request.setAttribute("member", pageUtil.getList());
         request.setAttribute("pager", pageUtil.paper());
 
+
+
+
+
         return "/jsp/admin/list.jsp";
     }
 

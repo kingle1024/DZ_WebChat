@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  <display-name>DZ_WebChat</display-name>
+  <welcome-boardFile-list>
+    <welcome-boardFile>login.html</welcome-boardFile>
+    <welcome-boardFile>index.html</welcome-boardFile>
+    <welcome-boardFile>index.jsp</welcome-boardFile>
+    <welcome-boardFile>index.htm</welcome-boardFile>
+    <welcome-boardFile>default.html</welcome-boardFile>
+    <welcome-boardFile>default.jsp</welcome-boardFile>
+    <welcome-boardFile>default.htm</welcome-boardFile>
+  </welcome-boardFile-list>
+  <context-param>
+    <param-name>server_address</param-name>
+    <param-value>localhost</param-value>
+  </context-param>
+</web-app>

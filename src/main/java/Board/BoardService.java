@@ -4,6 +4,7 @@ import BoardPopularity.BoardPopularity;
 import BoardPopularity.BoardPopularityDAO;
 import File.BoardFile;
 import File.BoardFileDAO;
+import Member.MemberBatis;
 import Member.MemberDAO;
 import Page.BoardParam;
 import Page.PageUtil;
@@ -15,7 +16,7 @@ public class BoardService {
     MemberDAO memberDAO = new MemberDAO();
     BoardFileDAO boardFileDAO = new BoardFileDAO();
     BoardPopularityDAO boardPopularityDAO = new BoardPopularityDAO();
-
+    MemberBatis memberBatis = new MemberBatis();
     public BoardView getBoard(String no, String loginId) {
         Board board = boardDAO.viewBoard(no);
         if(!loginId.equals(board.getBwriterId())){
@@ -122,8 +123,9 @@ public class BoardService {
             list = boardDAO.list(param);
             totalCount = boardDAO.listSize(param);
         }else if(listType.equals("member")){
-            list = memberDAO.list(param);
+//            list = memberDAO.list(param);
             totalCount = memberDAO.listSize(search);
+            list = memberBatis.memberList(param);
         }
 
         return PageUtil.builder()

@@ -20,7 +20,7 @@ public class BroadSocket {
     private static final Map<String, Integer> roomAndParticipantsCount = new HashMap<>();
     private EndpointConfig endpointConfig;
     // handshake가 끝나면 handleOpen이 호출된다.
-    @OnOpen
+        @OnOpen
     public void handleOpen(Session socketSession, EndpointConfig config,
                            @PathParam("roomName") String roomName) {
         endpointConfig = config;
@@ -56,7 +56,7 @@ public class BroadSocket {
         String sender = (String) json.get("sender");
 
         HashSet<String> userList = roomAndUserSet.get(roomName);
-
+//
         if(receiveMsg.startsWith("#w")) { // #w 123 q
             sendWhisper(userSession, receiveMsg, sender);
         }else{

@@ -1,34 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="DZ_WebChat:war exploded" />
+    </artifacts-to-build>
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="0533624c-7155-409b-a7e3-fc65ed877679" name="Changes" comment="first commit">
-      <change afterPath="$PROJECT_DIR$/src/main/java/member/Env.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/member/Member.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/member/MemberRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/member/MemberRepositoryDB.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/member/SignUpServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/member/env.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/test.js.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/WEB-INF/web.xml" afterDir="false" />
+    <list default="true" id="0533624c-7155-409b-a7e3-fc65ed877679" name="Changes" comment="- baseDAO 추가">
+      <change afterPath="$PROJECT_DIR$/lib/mybatis-3.5.11.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/mybatis-spring-1.0.1.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Board/BoardView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Controller/AllServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Custom/People.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Custom/test.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Member/Emd.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Member/MemberBatis.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Mvc/WebUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Mybatis/mappers/member.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/notice/test.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/template/menu.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/mybatis-3.5.11.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/mybatis-spring-1.0.1.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.wst.common.component" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.wst.common.component" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.settings/org.eclipse.wst.common.project.facet.core.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.settings/org.eclipse.wst.common.project.facet.core.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Admin/Action.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Admin/Action.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Auth/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Auth/LoginServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Board/BoardRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Board/BoardRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Board/BoardService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Board/BoardService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Chat/BroadSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Chat/BroadSocket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Config/CustomCofig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Config/CustomCofig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Listener/Listener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Listener/Listener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Member/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Member/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Member/MemberDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Member/MemberDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Member/env.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Member/env.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Page/BoardParam.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Page/BoardParam.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/member/MemberRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/member/MemberRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/access/register.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/access/register.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/admin/list.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/admin/list.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/normal/list.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/normal/list.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/notice/edit.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/notice/edit.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/notice/list.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/notice/list.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/notice/view.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/notice/view.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/qna/add.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/qna/add.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/qna/list.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/qna/list.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
+        <option value="AnnotationType" />
+        <option value="Jsp File" />
+        <option value="Interface" />
+        <option value="Tag Library Descriptor" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="false" />
+    <option name="FILTER_DEBUG" value="false" />
+    <option name="CUSTOM_FILTER" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -41,44 +88,106 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Downloaded.Files.Path.Enabled": "false",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/ejy1024/git/DZ_WebChat/src/main/java/member",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "configurable.group.appearance"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;true&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/ejy1024/git/DZ_WebChat/src/main/webapp/WEB-INF/lib&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.28633407&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.applicationServers&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mariadb&quot;
+    ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="Board" />
+      <recent name="LoginServlet" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/main/java/member" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/WEB-INF/lib" />
+      <recent name="$PROJECT_DIR$/lib" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/qna" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/notice" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/jsp/err" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/webapp/WEB-INF/jsp/access" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/WEB-INF" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/META-INF" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/resources" />
+      <recent name="$PROJECT_DIR$/src/main/webapp/jsp" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="Controller" />
+      <recent name="" />
+      <recent name="Chat" />
+      <recent name="File" />
+      <recent name="BoardPopularity" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
+  <component name="RunManager" selected="Application.AllServlet">
+    <configuration name="AllServlet" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Controller.AllServlet" />
       <module name="DZ_WebChat" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+    <configuration name="CustomCofig" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Config.CustomCofig" />
       <module name="DZ_WebChat" />
-      <option name="filePath" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Config.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Tomcat 10.0.23" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.0.23" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
+    <configuration name="test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Custom.test" />
+      <module name="DZ_WebChat" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Custom.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="add.jsp" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:8080/jsp/normal/add.jsp">
+      <method v="2" />
+    </configuration>
+    <configuration name="login.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/DZ_WebChat/src/main/webapp/login.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="Tomcat 10" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
+      <option name="COMMON_VM_ARGUMENTS" value="-Dfile.encoding=UTF-8" />
       <option name="UPDATING_POLICY" value="restart-server" />
       <deployment>
         <artifact name="DZ_WebChat:war exploded">
@@ -88,7 +197,7 @@
         </artifact>
       </deployment>
       <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="87acb20b-0626-4e0d-90c5-c5b8fcd61659" />
+        <option name="BASE_DIRECTORY_NAME" value="bb51d462-8465-457a-983a-db79857baf3c" />
       </server-settings>
       <predefined_log_file enabled="true" id="Tomcat" />
       <predefined_log_file enabled="true" id="Tomcat Catalina" />
@@ -96,7 +205,7 @@
       <predefined_log_file id="Tomcat Host Manager" />
       <predefined_log_file id="Tomcat Localhost Access" />
       <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="64960" />
+        <option name="DEBUG_PORT" value="64622" />
       </RunnerSettings>
       <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
         <option name="USE_ENV_VARIABLES" value="true" />
@@ -165,6 +274,220 @@
         </option>
       </method>
     </configuration>
+    <configuration name="Tomcat 9" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 9" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
+      <option name="COMMON_VM_ARGUMENTS" value="-Dfile.encoding=UTF-8" />
+      <option name="UPDATE_ON_FRAME_DEACTIVATION" value="true" />
+      <option name="UPDATING_POLICY" value="restart-server" />
+      <deployment>
+        <artifact name="DZ_WebChat:war exploded">
+          <settings>
+            <option name="CONTEXT_PATH" value="/" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="e47516c4-2ba0-4039-8a2c-382c6fa5e9c2" />
+      </server-settings>
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <predefined_log_file id="Tomcat Manager" />
+      <predefined_log_file id="Tomcat Host Manager" />
+      <predefined_log_file id="Tomcat Localhost Access" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="62133" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Profile">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="DZ_WebChat:war exploded" />
+        </option>
+      </method>
+    </configuration>
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
+      <deployment />
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="968e2ec9-03d3-4a5d-9dce-f0ab664336ad" />
+      </server-settings>
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <predefined_log_file id="Tomcat Manager" />
+      <predefined_log_file id="Tomcat Host Manager" />
+      <predefined_log_file id="Tomcat Localhost Access" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="64622" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Profile">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Remote" ALTERNATIVE_JRE_ENABLED="false">
+      <option name="LOCAL" value="false" />
+      <deployment />
+      <server-settings>
+        <data>
+          <option name="targets">
+            <list>
+              <WatchedTargetModelImpl>
+                <option name="name" value="CONTEXT_XML" />
+                <name>CONTEXT_XML</name>
+              </WatchedTargetModelImpl>
+              <StagingTargetModelImpl>
+                <option name="name" value="STAGING" />
+                <name>STAGING</name>
+              </StagingTargetModelImpl>
+            </list>
+          </option>
+          <option name="transportHostId" />
+        </data>
+      </server-settings>
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="TOMCAT_LOCALHOST_LOG_ID" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="64621" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.AllServlet" />
+      <item itemvalue="Application.test" />
+      <item itemvalue="Application.CustomCofig" />
+      <item itemvalue="JavaScript Debug.add.jsp" />
+      <item itemvalue="JavaScript Debug.login.html" />
+      <item itemvalue="Tomcat Server.Tomcat 9" />
+      <item itemvalue="Tomcat Server.Tomcat 10" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.AllServlet" />
+        <item itemvalue="Application.test" />
+        <item itemvalue="Application.CustomCofig" />
+        <item itemvalue="JavaScript Debug.add.jsp" />
+        <item itemvalue="JavaScript Debug.login.html" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -175,16 +498,419 @@
       <option name="presentableId" value="Default" />
       <updated>1669631141618</updated>
       <workItem from="1669631143063" duration="617000" />
-      <workItem from="1669631802579" duration="30160000" />
+      <workItem from="1669631802579" duration="52349000" />
+      <workItem from="1670109310921" duration="1273000" />
+      <workItem from="1670110938342" duration="6635000" />
+      <workItem from="1670118071732" duration="5000" />
+      <workItem from="1670119708395" duration="12486000" />
+      <workItem from="1670138896465" duration="7261000" />
+      <workItem from="1670153626045" duration="38263000" />
+      <workItem from="1670294249081" duration="49124000" />
+      <workItem from="1670397687178" duration="21853000" />
+      <workItem from="1670463744869" duration="2577000" />
+      <workItem from="1670466393451" duration="75000" />
+      <workItem from="1670466472562" duration="515000" />
+      <workItem from="1670466998617" duration="4822000" />
+      <workItem from="1670474206582" duration="2898000" />
+      <workItem from="1670477995201" duration="2156000" />
+      <workItem from="1670480163501" duration="68065000" />
+      <workItem from="1670666803910" duration="9277000" />
+      <workItem from="1670715874313" duration="36614000" />
+      <workItem from="1670809092614" duration="24250000" />
+      <workItem from="1670839668212" duration="1153000" />
+      <workItem from="1670840883096" duration="19384000" />
+      <workItem from="1670894311432" duration="20674000" />
+      <workItem from="1670994747580" duration="3000" />
+      <workItem from="1670995221422" duration="12387000" />
+      <workItem from="1671009087850" duration="2974000" />
+      <workItem from="1671015732995" duration="54028000" />
+      <workItem from="1671244798958" duration="4061000" />
+      <workItem from="1671256389502" duration="31851000" />
+      <workItem from="1671368043383" duration="40954000" />
+      <workItem from="1671503361322" duration="26309000" />
+      <workItem from="1671602007055" duration="15211000" />
+      <workItem from="1671669240656" duration="5545000" />
+      <workItem from="1671753932838" duration="657000" />
+      <workItem from="1671778603524" duration="10210000" />
+      <workItem from="1671843712715" duration="598000" />
+      <workItem from="1671852689789" duration="34185000" />
+      <workItem from="1672034369821" duration="7811000" />
+      <workItem from="1672052129700" duration="4176000" />
+      <workItem from="1672215988158" duration="1806000" />
+      <workItem from="1672224350922" duration="9000" />
+      <workItem from="1672282951100" duration="703000" />
+      <workItem from="1672295390513" duration="7084000" />
+      <workItem from="1672374366947" duration="1493000" />
+      <workItem from="1672406437101" duration="694000" />
+      <workItem from="1672443196642" duration="695000" />
+      <workItem from="1672450688165" duration="1211000" />
+      <workItem from="1672464827899" duration="3933000" />
+      <workItem from="1672479776164" duration="933000" />
+      <workItem from="1672485444250" duration="8014000" />
+      <workItem from="1672543600859" duration="597000" />
+      <workItem from="1672551470247" duration="37564000" />
+      <workItem from="1672715121991" duration="1853000" />
+      <workItem from="1672723561513" duration="159000" />
+      <workItem from="1672723839838" duration="2905000" />
+      <workItem from="1672734370388" duration="27347000" />
+      <workItem from="1672885132033" duration="43000" />
+      <workItem from="1672888341133" duration="3249000" />
+      <workItem from="1672896546692" duration="77000" />
+      <workItem from="1672899583772" duration="413000" />
+      <workItem from="1672903193867" duration="102000" />
+      <workItem from="1672906779538" duration="202000" />
+      <workItem from="1672908891116" duration="157000" />
+      <workItem from="1672972704224" duration="2379000" />
+      <workItem from="1673176213055" duration="437000" />
+      <workItem from="1673180743615" duration="2000" />
+      <workItem from="1673492198805" duration="143000" />
+      <workItem from="1673493798633" duration="14504000" />
+      <workItem from="1673657501354" duration="9000" />
     </task>
-    <task id="LOCAL-00001" summary="first commit">
-      <created>1669631847240</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
+    <task id="LOCAL-00040" summary="ck editor5 수정 구현">
+      <created>1670719593749</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
       <option name="project" value="LOCAL" />
-      <updated>1669631847240</updated>
+      <updated>1670719593749</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00041" summary="ck editor5 수정 구현">
+      <created>1670720009270</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1670720009270</updated>
+    </task>
+    <task id="LOCAL-00042" summary="fixed 게시글 삭제 프로시저로 변경 #6&#10;- update status del (상태값 삭제로 변경)&#10;- insert del_board (삭제 테이블에 추가)">
+      <created>1670725920582</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1670725920582</updated>
+    </task>
+    <task id="LOCAL-00043" summary="글 삭제 구현">
+      <created>1670747319009</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1670747319009</updated>
+    </task>
+    <task id="LOCAL-00044" summary="일반 게시판 글 검색 구현">
+      <created>1670747606946</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1670747606946</updated>
+    </task>
+    <task id="LOCAL-00045" summary="일반 게시판 수정, 추가 구현">
+      <created>1670757428831</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1670757428831</updated>
+    </task>
+    <task id="LOCAL-00046" summary="게시물 갯수 가져오는 DAO 추가">
+      <created>1670804469374</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1670804469374</updated>
+    </task>
+    <task id="LOCAL-00047" summary="페이징 추가">
+      <created>1670805945847</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1670805945847</updated>
+    </task>
+    <task id="LOCAL-00048" summary="공지사항 좋아요, 싫어요 추가">
+      <created>1670815117233</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1670815117233</updated>
+    </task>
+    <task id="LOCAL-00049" summary="채팅방 제거 안되는 이슈 수정&#10;- 나갔을 때에 인원수가 0이면 제거하도록 처리&#10;- 새로고침 시에 다시 방을 만듬.">
+      <created>1670835589394</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1670835589394</updated>
+    </task>
+    <task id="LOCAL-00050" summary="DataSource를 Listener로 처리">
+      <created>1670921370893</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1670921370894</updated>
+    </task>
+    <task id="LOCAL-00051" summary="파일 업로드 및 다운로드 구현(쓰기, 읽기)">
+      <created>1671014159372</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1671014159372</updated>
+    </task>
+    <task id="LOCAL-00052" summary="파일 업로드 및 다운로드 구현(쓰기, 읽기)">
+      <created>1671014618017</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1671014618017</updated>
+    </task>
+    <task id="LOCAL-00053" summary="파일 업로드 및 다운로드 구현(쓰기, 읽기)">
+      <created>1671014731350</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1671014731350</updated>
+    </task>
+    <task id="LOCAL-00054" summary="파일 업로드 및 다운로드 구현(쓰기, 읽기)">
+      <created>1671014742699</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1671014742699</updated>
+    </task>
+    <task id="LOCAL-00055" summary="db 파일 업로드">
+      <created>1671095705093</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1671095705093</updated>
+    </task>
+    <task id="LOCAL-00056" summary="에러 페이지 추가">
+      <created>1671200419857</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1671200419857</updated>
+    </task>
+    <task id="LOCAL-00057" summary="구조 변경 - 서블릿과 Action을 분리하도록 처리">
+      <created>1671265481359</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1671265481359</updated>
+    </task>
+    <task id="LOCAL-00058" summary="로그인 페이지 접근 시, user_id 없으면 추가">
+      <created>1671284842678</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1671284842678</updated>
+    </task>
+    <task id="LOCAL-00059" summary="WEB-INF로 이동 처리">
+      <created>1671413896894</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1671413896895</updated>
+    </task>
+    <task id="LOCAL-00060" summary="어노테이션 추가">
+      <created>1671414027412</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1671414027412</updated>
+    </task>
+    <task id="LOCAL-00061" summary="경로 변경">
+      <created>1671414173972</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1671414173972</updated>
+    </task>
+    <task id="LOCAL-00062" summary="access servlet 추가">
+      <created>1671434986501</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1671434986501</updated>
+    </task>
+    <task id="LOCAL-00063" summary="- add 페이지 get 처리&#10;- replyForm 페이지 get 처리&#10;- /view의 경우 type에 맞게 이동하도록 변경">
+      <created>1671435060710</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435060710</updated>
+    </task>
+    <task id="LOCAL-00064" summary="- 어노테이션 추가&#10;- 수정 파일 처리&#10;- 답글 추가">
+      <created>1671435171259</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435171260</updated>
+    </task>
+    <task id="LOCAL-00065" summary="admin servlet 추가">
+      <created>1671435206205</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435206205</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Board DB 추가">
+      <created>1671435298069</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435298069</updated>
+    </task>
+    <task id="LOCAL-00067" summary="builder 처리">
+      <created>1671435375222</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435375222</updated>
+    </task>
+    <task id="LOCAL-00068" summary="경로 처리">
+      <created>1671435617136</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435617136</updated>
+    </task>
+    <task id="LOCAL-00069" summary="listener에 chatDAO 추가">
+      <created>1671435657389</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435657389</updated>
+    </task>
+    <task id="LOCAL-00070" summary="chatDAO 분리">
+      <created>1671435694638</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435694638</updated>
+    </task>
+    <task id="LOCAL-00071" summary="replyForm jsp 추가">
+      <created>1671435769907</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435769907</updated>
+    </task>
+    <task id="LOCAL-00072" summary="- 공지사항에서 답글 버튼 제거&#10;- QnA에서 답글 버튼 추가">
+      <created>1671435801449</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435801449</updated>
+    </task>
+    <task id="LOCAL-00073" summary="QnA 파일 첨부 추가">
+      <created>1671435853659</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435853659</updated>
+    </task>
+    <task id="LOCAL-00074" summary="페이징 &lt;, &lt;&lt;, &gt;, &gt;&gt; 추가">
+      <created>1671435941658</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435941658</updated>
+    </task>
+    <task id="LOCAL-00075" summary="web.xml 파일 정리">
+      <created>1671435964886</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435964886</updated>
+    </task>
+    <task id="LOCAL-00076" summary="jar 파일 추가">
+      <created>1671435993444</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1671435993444</updated>
+    </task>
+    <task id="LOCAL-00077" summary="DB context.xml 변경">
+      <created>1671436007944</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1671436007944</updated>
+    </task>
+    <task id="LOCAL-00078" summary="페이징 처리 변경">
+      <created>1671534946254</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1671534946254</updated>
+    </task>
+    <task id="LOCAL-00079" summary="paging index 추가 및 join 추가">
+      <created>1671534994490</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1671534994490</updated>
+    </task>
+    <task id="LOCAL-00080" summary="공통 js 추가">
+      <created>1671620772707</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1671620772707</updated>
+    </task>
+    <task id="LOCAL-00081" summary="Repository 추가">
+      <created>1671754299394</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1671754299394</updated>
+    </task>
+    <task id="LOCAL-00082" summary="- board service 분리&#10;- boardFile 가져오는 로직 service로 분리">
+      <created>1671869762631</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1671869762632</updated>
+    </task>
+    <task id="LOCAL-00083" summary="select 주소 검색 구현">
+      <created>1671973633422</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1671973633422</updated>
+    </task>
+    <task id="LOCAL-00084" summary="- board service 분리">
+      <created>1671973691024</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1671973691024</updated>
+    </task>
+    <task id="LOCAL-00085" summary="- 안쓰는 코드 제거">
+      <created>1671973748266</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1671973748267</updated>
+    </task>
+    <task id="LOCAL-00086" summary="- Service 분리">
+      <created>1671973762001</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1671973762001</updated>
+    </task>
+    <task id="LOCAL-00087" summary="- mybatis 설정 파일 추가">
+      <created>1672406508066</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1672406508066</updated>
+    </task>
+    <task id="LOCAL-00088" summary="- baseDAO 추가">
+      <created>1672578856029</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1672578856029</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,7 +928,52 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="first commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="first commit" />
+    <MESSAGE value="admin servlet 추가" />
+    <MESSAGE value="Board DB 추가" />
+    <MESSAGE value="builder 처리" />
+    <MESSAGE value="경로 처리" />
+    <MESSAGE value="listener에 chatDAO 추가" />
+    <MESSAGE value="chatDAO 분리" />
+    <MESSAGE value="replyForm jsp 추가" />
+    <MESSAGE value="공지사항에서 답글 버튼 제거" />
+    <MESSAGE value="- 공지사항에서 답글 버튼 제거&#10;- QnA에서 답글 버튼 추가" />
+    <MESSAGE value="QnA 파일 첨부 추가" />
+    <MESSAGE value="페이징 &lt;, &lt;&lt;, &gt;, &gt;&gt; 추가" />
+    <MESSAGE value="web.xml 파일 정리" />
+    <MESSAGE value="jar 파일 추가" />
+    <MESSAGE value="DB context.xml 변경" />
+    <MESSAGE value="페이징 처리 변경" />
+    <MESSAGE value="paging index 추가 및 join 추가" />
+    <MESSAGE value="공통 js 추가" />
+    <MESSAGE value="Repository 추가" />
+    <MESSAGE value="- board service 분리&#10;- boardFile 가져오는 로직 service로 분리" />
+    <MESSAGE value="select 주소 검색 구현" />
+    <MESSAGE value="- board service 분리" />
+    <MESSAGE value="- 안쓰는 코드 제거" />
+    <MESSAGE value="- Service 분리" />
+    <MESSAGE value="- mybatis 설정 파일 추가" />
+    <MESSAGE value="- baseDAO 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="- baseDAO 추가" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Board/BoardDAO.java</url>
+          <line>346</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Board/BoardService.java</url>
+          <line>20</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Member/MemberDAO.java</url>
+          <line>108</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
