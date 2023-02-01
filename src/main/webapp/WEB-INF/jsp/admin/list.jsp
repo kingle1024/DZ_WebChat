@@ -28,7 +28,7 @@ ${members}
 <div id="searchSuggest"></div>
 <table>
     <thead>
-        <td>번호</td>
+        <td>번호123</td>
         <td>아이디</td>
         <td>이름</td>
         <td>이메일</td>
